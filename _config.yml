@@ -37,10 +37,11 @@ remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 # permalink: /:categories/:title/
 # paginate: 10 # amount of posts to show
 # paginate_path: /page:num/
-timezone:	Asia/Shanghai
+timezone: Asia/Shanghai
 
 include:
   - _pages
+  - _data
 
 # Exclude from processing.
 # The following items will not be processed, by default.
@@ -50,17 +51,17 @@ include:
 # Excluded items can be processed by explicitly listing the directories or
 # their entries' file path in the `include:` list.
 #
-# exclude:
-#   - .sass-cache/
-#   - .jekyll-cache/
-#   - gemfiles/
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules/
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+exclude:
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
 
 plugins:
   - jekyll-feed
@@ -121,7 +122,7 @@ defaults:
     values:
       layout: single
       author_profile: false
-  images
+  # images
   - scope:
       path: "assets/images"
     values:
