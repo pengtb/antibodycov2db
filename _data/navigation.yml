@@ -1,9 +1,9 @@
 main:
-  - title: "Posts"
-    url: /posts/
-  - title: "Categories"
-    url: /categories/
-  - title: "Tags"
-    url: /tags/
+  - title: "QuickStart"
+    url: /
+  - title: "Download"
+    url: /download/
+  - title: "Browse"
+    url: /browse/
   - title: "About"
     url: /about/
