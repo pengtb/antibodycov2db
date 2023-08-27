@@ -6,6 +6,7 @@ header:
     # actions:
     #  - label: "Download All"
     #    url: "https://github.com"
+classes: wide
 csv_reader:
     converters:
       - all
@@ -41,8 +42,8 @@ Please choose a table firstly:
 Then click <a id="dbtable-dllink" href="../_data/tables/name.csv" download="name.csv">here</a> to download the table.
 ## Introduction
 <p id="dbtable-intro">The table <em><strong>name</strong></em> consists of two columns: <em>names</em> of antibodies and built-in <em>unique IDs</em>.</p>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
-</script>
+<!-- <script src="../assets/js/main.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <!-- change introduction according to selected -->
 <script>
 $(document).ready(function(){
@@ -61,7 +62,7 @@ $(document).ready(function(){
     } else if (table2dl === "num_domain") {
       $("#dbtable-intro").html("The table <em><strong>num_domain</strong></em> indicates number of variabl/constant domains in a heavy/light chain sequence. A full-length heavy chain sequence includes one variable domain and three constant domains, while a full-length light chain sequence includes one variable domain and one constant domain, as shown in an illustration from <a href=\"https://opig.stats.ox.ac.uk/webapps/sabdab-sabpred/sabdab\">SAbDab</a><br><img src=\"https://opig.stats.ox.ac.uk/webapps/sabdab-sabpred/static/img/antibody_schematic.png\"><br>However, the form of our collected antibodies can be IgG (the full-length form), Fab, Fv or even scFv. Domain of each sequence was identified using <a href=\"https://www.ebi.ac.uk/interpro/about/interproscan\">InterProScan</a>. The table thus consists of two columns: the <em>sequence</em> and its <em>number of domains</em>.");
     } else if (table2dl === "ab_type") {
-      $("#dbtable-intro").html("The table <em><strong>ab_type</strong></em> indicates the form of an antibody. Number of varible/constant domains in a sequence was specified using <a href=\"https://www.ebi.ac.uk/interpro/about/interproscan\">InterProScan</a> and then was used to determine the form of the antibody. The table thus consists of two columns: the <em>sequence</em> and its <em>form</em>.");
+      $("#dbtable-intro").html("The table <em><strong>ab_type</strong></em> indicates the form of an antibody. Number of varible/constant domains in a sequence was specified using <a href=\"https://www.ebi.ac.uk/interpro/about/interproscan\">InterProScan</a> and then was used to determine the form of the antibody. The form of antibodies can be IgG, Fab and Fv, as shown in an illustration from <a href=\"https://opig.stats.ox.ac.uk/webapps/sabdab-sabpred/sabdab\">SAbDab</a><br><img src=\"https://opig.stats.ox.ac.uk/webapps/sabdab-sabpred/static/img/antibody_schematic.png\"><br>The table thus consists of two columns: the <em>sequence</em> and its <em>form</em>.");
     } else if (table2dl === "trunct2fv") {
       $("#dbtable-intro").html("The table <em><strong>trunct2fv</strong></em> indicates the variable domain of a heavy/light chain antiobdy sequence. The variable domain was identified using <a href=\"https://www.ebi.ac.uk/interpro/about/interproscan\">InterProScan</a>. The identification involves analysis CDD, Pfam and SUPERFAMILY. The table thus consists of two columns: the <em>sequence</em> and corresponding extracted <em>variable domain sequence</em>.");
     } else if (table2dl === "pdb_chain_idmapping") {
@@ -98,7 +99,9 @@ Number of rows to show:
   <option selected>10</option>
   <option >20</option>
   <option >50</option>
-</select><br>
+</select>
+<a href="#preview" class="btn btn--primary" id="preview-button">Preview</a><br>
+<p id="loading-para"></p>
 <!-- show table -->
 <table id="table-preview">
 <!-- add table header -->
@@ -117,14 +120,35 @@ Number of rows to show:
   </tr>
 {% endfor %}
 </tbody>
-</table>
+</table>{: .full}
+<script src="../assets/js/plugins/jquery.csv.js"></script>
 <script>
 function ShowTable() {
   var tablename = $("#table-select").val();
-  var numrow = $("#numrow-select").val();
-  $("#table-preview-header").html("<tr></tr>");
+  $("#loading-para").text("Loading...");
+  $.get("../_data/tables/" + tablename + ".csv", function(data) {
+    var parsed = $.csv.toObjects(data);
+    var numrow = $("#numrow-select").val();
+    $("#table-preview-header").html("");
+    $("#table-preview-header").append("<tr>");
+    $.each(parsed[0], function(key, value) {
+      $("#table-preview-header").append("<th>" + key + "</th>");
+    });
+    $("#table-preview-header").append("</tr>");
+    $("#table-preview-body").html("");
+    for (var i = 0; i < numrow; i++) {
+      $("#table-preview-body").append("<tr>");
+      $.each(parsed[i], function(key, value) {
+        $("#table-preview-body").append("<td>" + value + "</td>");
+      });
+      $("#table-preview-body").append("</tr>");
+    }
+  }, "text")
+  .done(function() {
+    $("#loading-para").text("");
+  })
 }
 $(document).ready(function(){
-  $("#numrow-select").click(ShowTable);
+  $("#preview-button").click(ShowTable);
 });
 </script>

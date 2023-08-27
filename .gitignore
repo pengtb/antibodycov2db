@@ -6,3 +6,4 @@ vendor
 templates
 legacy
 scripts
+node_modules
