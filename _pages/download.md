@@ -38,16 +38,16 @@ Please choose a table firstly:
   <option value="epitope_group">epitope_group</option>
   <option value="target_rbdseq">target_rbdseq</option>
   <option value="vgene">vgene</option>
-</select><br>
-Then click <a id="dbtable-dllink" href="../_data/tables/name.csv" download="name.csv">here</a> to download the table.
-## Introduction
+</select>
+<a id="dbtable-dllink" href="../_data/tables/name.csv" download="name.csv" class="btn btn--primary">Download</a>
+#### Introduction
 <p id="dbtable-intro">The table <em><strong>name</strong></em> consists of two columns: <em>names</em> of antibodies and built-in <em>unique IDs</em>.</p>
 <!-- <script src="../assets/js/main.min.js"></script> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <!-- change introduction according to selected -->
 <script>
 $(document).ready(function(){
-  $("#table-select").click(function() {
+  $("#table-select").change(function() {
     var table2dl = $("#table-select").val();
     if (table2dl === "name") {
       $("#dbtable-intro").html("The table <em><strong>name</strong></em> consists of two columns: <em>names</em> of antibodies and built-in <em>unique IDs</em>.");
@@ -93,17 +93,22 @@ $(document).ready(function(){
   });
 });
 </script>
-## Preview
+#### Preview
 Number of rows to show: 
 <select name="preview-numrow" id="numrow-select">
   <option selected>10</option>
   <option >20</option>
   <option >50</option>
 </select>
-<a href="#preview" class="btn btn--primary" id="preview-button">Preview</a><br>
-<p id="loading-para"></p>
+<br>
+<p id="loading-para" class="text-left"><a href="#preview" class="btn btn--primary" id="preview-button">Apply</a></p>
+<style>
+td {
+  white-space: nowrap;
+}
+</style>
 <!-- show table -->
-<table id="table-preview">
+<p class="text-center"><table id="table-preview">
 <!-- add table header -->
 <thead id="table-preview-header"><tr>
 {% for cell in site.data.tables.name[0] %}
@@ -120,12 +125,13 @@ Number of rows to show:
   </tr>
 {% endfor %}
 </tbody>
-</table>{: .full}
+</table></p>
+
 <script src="../assets/js/plugins/jquery.csv.js"></script>
 <script>
 function ShowTable() {
   var tablename = $("#table-select").val();
-  $("#loading-para").text("Loading...");
+  $("#preview-button").text("Loading...");
   $.get("../_data/tables/" + tablename + ".csv", function(data) {
     var parsed = $.csv.toObjects(data);
     var numrow = $("#numrow-select").val();
@@ -145,10 +151,11 @@ function ShowTable() {
     }
   }, "text")
   .done(function() {
-    $("#loading-para").text("");
+    $("#preview-button").text("Apply");
   })
 }
 $(document).ready(function(){
   $("#preview-button").click(ShowTable);
+  $("#table-select").change(ShowTable);
 });
 </script>
