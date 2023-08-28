@@ -7,3 +7,15 @@ main:
     url: /browse/
   - title: "About"
     url: /about/
+
+side:
+  - title: "Getting Started"
+    children:
+      - title: "What is this db for?"
+        url: /#what-is-this-db-for
+  - title: "Download"
+    children:
+      - title: "Download all"
+        url: /download/#download-all
+      - title: "Download one"
+        url: /download/#download-one

@@ -4,10 +4,6 @@ layout: single
 author_profile: false
 permalink: /
 
-toc: true
-toc_label: Overview
-toc_sticky: true
-
 excerpt: "A database for antibodies targeting SARS-CoV2 spike WT/mutant RBD."
 header: 
     overlay_color: "#333"
@@ -15,6 +11,7 @@ header:
     #  - label: "Download All"
     #    url: "https://github.com"
 
+classes: wide
 ---
 # What is this db for?
 This database aims to provide more detailed information for antibodies binding to RBD of SARS-CoV2 spike protein. Compared with other similar ones, the database provides following features:

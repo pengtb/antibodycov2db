@@ -18,10 +18,10 @@ tsv_reader:
     headers: true
     encoding: utf-8
 ---
-# One click for all
+# One click for all {#download-all}
 Just click <a href="../compressed/all_db_tables.7z" download="all_db_tables.7z">here</a> to download all the tables in the database and <a href="../compressed/all_ds_tables.7z" download="all_ds_tables.7z">here</a> for all the processed datasets.
 
-# Or select one table to preview and download
+# Or select one table to preview and download {#download-one}
 Please choose a table firstly: 
 <select name="table2dl" id="table-select">
   <option value="name" selected>name</option>
