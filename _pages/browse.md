@@ -21,19 +21,18 @@ tsv_reader:
 # Browse datasets
 Select a processed dataset:
 <select name="dataset2dl" id="dataset-select">
-  <option value="classification" selected>classification</option>
-  <option value="ranking">ranking</option>
+  <option value="classification">classification</option>
+  <option value="ranking" selected>ranking</option>
   <option value="epitope prediction">epitope prediction</option>
 </select><br>
 
 #### Introduction
-<p id="dataset-intro-1">The <em><strong>classification</strong></em> dataset includes all collected antibodies that show direct binding (or not binding) evidence to WT or mutant SARS-CoV2 spike RBD. The dataset is designed for discovery of new binding antibodies only using <em>heavy/light chain variable-domain sequences</em> of antibodies and sequence of RBD. <em>Region information</em> of sequences (a.k.a. CDR/FR) is also included for prediction.</p>
-<p id="dataset-intro-2">For collected samples are mostly positive (mainly because of manual selection), antibodies showing clear binding evidence to other epitopes of spike protein (such as NTD) or even other proteins are included as well as negative samples. The dataset is split into training, validation and test sets, as shown in the <em>ds</em> column, meanwhile positive/negative samples and samples targeting variants of RBD are both evenly distributed in each set. The test set can be further split into 3 subset: unseen WT, unseen Omicron and seen Omicron, as shown in the <em>usage</em> column. "Unseen" samples are those not seen in the training/validation sets, while "seen" samples are the opposite.</p>
+<p id="dataset-intro-1"></p>
+<p id="dataset-intro-2"></p>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <!-- change introduction according to selected -->
 <script>
-$(document).ready(function(){
-  $("#dataset-select").change(function() {
+function UpdateDatasetIntro() {
     var table2dl = $("#dataset-select").val();
     if (table2dl === "classification") {
       $("#dataset-intro-1").html("The <em><strong>classification</strong></em> dataset includes all collected antibodies that show direct binding (or not binding) evidence to WT or mutant SARS-CoV2 spike RBD. The dataset is designed for discovery of new binding antibodies only using <em>heavy/light chain variable-domain sequences</em> of antibodies and sequence of RBD. <em>Region information</em> of sequences (a.k.a. CDR/FR) is also included for prediction.");
@@ -47,7 +46,10 @@ $(document).ready(function(){
     } else {
       $("#dataset-intro-1").text("");
     }
-  });
+}
+$(document).ready(function(){
+    UpdateDatasetIntro();
+    $("#dataset-select").change(UpdateDatasetIntro);
 });
 </script>
 
@@ -58,7 +60,7 @@ Number of rows:
   <option value="50">50</option>
   <option value="100">100</option>
 </select><br>
-Columns to show:  
+<p><span>Columns to show:  </span><span style="float: right"><a href="#browse" class="btn btn--primary" id="preview-button">Apply</a></span></p>
 <style>
 label.labelcheckbox {
   display: flex;
@@ -70,48 +72,18 @@ div.divcheckbox {
   line-height: 0.75;
 }
 </style>
-<form id="dscolumns-select">
-<div class="divcheckbox"><label for="columns-select-box-1" class="labelcheckbox"><input type="checkbox" id="columns-select-box-1" checked />ab_idx</label></div>
-<div class="divcheckbox"><label for="columns-select-box-2" class="labelcheckbox"><input type="checkbox" id="columns-select-box-2" checked />target</label></div>
-<div class="divcheckbox"><label for="columns-select-box-3" class="labelcheckbox"><input type="checkbox" id="columns-select-box-3" checked />evidence</label></div>
-<div class="divcheckbox"><label for="columns-select-box-4" class="labelcheckbox"><input type="checkbox" id="columns-select-box-4" checked />binding</label></div>
-<div class="divcheckbox"><label for="columns-select-box-5" class="labelcheckbox"><input type="checkbox" id="columns-select-box-5" checked />KD</label></div>
-<div class="divcheckbox"><label for="columns-select-box-6" class="labelcheckbox"><input type="checkbox" id="columns-select-box-6" checked />source</label></div>
-<div class="divcheckbox"><label for="columns-select-box-7" class="labelcheckbox"><input type="checkbox" id="columns-select-box-7" checked />Hseq</label></div>
-<div class="divcheckbox"><label for="columns-select-box-8" class="labelcheckbox"><input type="checkbox" id="columns-select-box-8" checked />Lseq</label></div>
-<div class="divcheckbox"><label for="columns-select-box-9" class="labelcheckbox"><input type="checkbox" id="columns-select-box-9" checked />Hregion</label></div>
-<div class="divcheckbox"><label for="columns-select-box-10" class="labelcheckbox"><input type="checkbox" id="columns-select-box-10" checked />Lregion</label></div>
-<div class="divcheckbox"><label for="columns-select-box-11" class="labelcheckbox"><input type="checkbox" id="columns-select-box-11" checked />rbd_seq</label></div>
-<div class="divcheckbox"><label for="columns-select-box-12" class="labelcheckbox"><input type="checkbox" id="columns-select-box-12" checked />matched_lineage</label></div>
-<div class="divcheckbox"><label for="columns-select-box-13" class="labelcheckbox"><input type="checkbox" id="columns-select-box-13" checked />ds</label></div>
-<div class="divcheckbox"><label for="columns-select-box-14" class="labelcheckbox"><input type="checkbox" id="columns-select-box-14" checked />usage</label></div>
-<div class="divcheckbox"><label for="columns-select-box-15" class="labelcheckbox"><input type="checkbox" id="columns-select-box-15" checked />confident</label></div>
-</form>
-<p id="loading-para" class="text-right"><a href="#browse" class="btn btn--primary" id="preview-button">Apply</a></p>
+<form id="dscolumns-select"></form>
+<p id="pagination-para" class="text-center">Page: </p>
 <style>
 td {
   white-space: nowrap;
 }
 </style>
-<!-- show table -->
-<table id="table-browse">
-<!-- add table header -->
-<thead id="table-browse-header"><tr>
-{% for cell in site.data.datasets.classification_variantrbd[0] %}
-  <th>{{ cell[0] }}</th>
-{% endfor %}
-</tr></thead>
-<!-- add table contents -->
-<tbody id="table-browse-body">
-{% for row in site.data.datasets.classification_variantrbd limit:10 %}
-  <tr>
-  {% for cell in row %}
-    <td>{{ cell[1] }}</td>
-  {% endfor %}
-  </tr>
-{% endfor %}
-</tbody>
-</table>{: .full}
+<p class="text-center"><table id="table-browse">
+<thead id="table-browse-header"></thead>
+<tbody id="table-browse-body"></tbody>
+</table></p>
+<!-- load & show & update table -->
 <script src="../assets/js/plugins/jquery.csv.js"></script>
 <script>
 function GetDsBasename(datasetname) {
@@ -123,7 +95,90 @@ function GetDsBasename(datasetname) {
     var filebasename = "epitope_variantrbd";
   };
   return filebasename
+};
+function LoadDataset() {
+    var datasetname = $("#dataset-select").val();
+    var filebasename = GetDsBasename(datasetname);
+    var result = null;
+    var filepath = "../_data/datasets/" + filebasename + ".tsv";
+    $("#preview-button").text("Loading...");
+    $.ajax({
+        url: filepath,
+        type: "GET",
+        async: false,
+        dataType: "text",
+        success: function(data) {
+            data = data.replace(/\t/g, ",");
+            var parsed = $.csv.toObjects(data);
+            result = parsed;
+        }
+    }).done(function() {
+        $("#preview-button").text("Apply");
+    });
+    return result;
 }
+function UpdateDatasetColumns(parsed) {
+    $("#dscolumns-select").html("");
+    var checkbox_idx = 1;
+    $.each(parsed[0], function(key, value) {
+        $("#dscolumns-select").append("<div class=\"divcheckbox\"><label for=\"columns-select-box-"+checkbox_idx+"\" class=\"labelcheckbox\"><input type=\"checkbox\" id=\"columns-select-box-"+checkbox_idx+"\" checked />" + key + "</label></div>");
+        checkbox_idx += 1;
+    });
+};
+function UpdatePagination(parsed) {
+    $("#pagination-para").html("Page: ");
+    const numrows = $("#numrow-select").val();
+    var numpages = Math.ceil(parsed.length / numrows);
+    const shownumpages = 3;
+    for (let i = 1; i <= numpages; i++) {
+        $("#pagination-para").append("<a id=\"page-" + i + "\" href=\"#browse\" class=\"btn btn--inverse\">" + i + "</a> ");
+        $("#page-" + i).click(function() {
+            ChangePage(i);
+            ShowTable(parsed, GetSelectedColumns(), i-1);
+        });
+        if ((i <= shownumpages) || (i === numpages)) {
+        } else {
+            $("#page-" + i).hide();
+        };
+        if (i === 1) {
+            $("#pagination-para").append("<span id=\"page-sep-first\"> </span>");
+        } else if (i === numpages-1) {
+            $("#pagination-para").append("<span id=\"page-sep-last\">... </span>");
+        } else {
+        };
+    };
+    $("#page-1").attr("class", "btn btn--light-outline");
+};
+function ChangePage(pageindex) {
+    const shownumpages = 2;
+    var numpages = $("#pagination-para a").length;
+    $.each($("#pagination-para a"), function(index, element) {
+        $(element).hide();
+    });
+    $("a[class='btn btn--light-outline']").attr("class", "btn btn--inverse");
+    var firstpageindex = Math.max(1, pageindex - shownumpages);
+    var lastpageindex = Math.min(pageindex + shownumpages, numpages);
+    for (let i = firstpageindex; i <= lastpageindex; i++) {
+        $("#page-" + i).show();
+    };
+    $("#page-" + pageindex).attr("class", "btn btn--light-outline");
+    if (firstpageindex > 1) {
+        $("#page-1").show();
+    };
+    if (lastpageindex < numpages) {
+        $("#page-" + numpages).show();
+    };
+    if (firstpageindex > 2) {
+        $("#page-sep-first").text("... ");
+    } else {
+        $("#page-sep-first").text(" ");
+    };
+    if (lastpageindex < numpages-1) {
+        $("#page-sep-last").text("... ");
+    } else {
+        $("#page-sep-last").text(" ");
+    };
+};
 function GetSelectedColumns() {
   var checkedcolumns = [];
   for (checkedinput of document.querySelectorAll("#dscolumns-select input[type='checkbox']:checked")) {
@@ -131,71 +186,57 @@ function GetSelectedColumns() {
     checkedcolumns.push(checkboxlabel.innerText);
   };
   return checkedcolumns
-}
-function ShowTable(checkedcolumns) {
-  var datasetname = $("#dataset-select").val();
-  var filebasename = GetDsBasename(datasetname);
-  $("#preview-button").text("Loading...");
-  $.get("../_data/datasets/" + filebasename + ".tsv", function(data) {
-    // replace tab with comma
-    data = data.replace(/\t/g, ",");
-    var parsed = $.csv.toObjects(data);
+};
+function ShowTable(parsed, checkedcolumns, startindex=0) {
     var numrow = $("#numrow-select").val();
+    var startrowindex = startindex * numrow;
+    var endrowindex = (startindex + 1) * numrow;
+    $("#preview-button").text("Loading...");
     $("#table-browse-header").html("");
     $("#table-browse-header").append("<tr>");
     $.each(parsed[0], function(key, value) {
-      if (typeof checkedcolumns !== "undefined") {
+        if (typeof checkedcolumns !== "undefined") {
         if (checkedcolumns.includes(key)) {
-          $("#table-browse-header").append("<th>" + key + "</th>");
+            $("#table-browse-header").append("<th>" + key + "</th>");
         };
-      } else {
+        } else {
         $("#table-browse-header").append("<th>" + key + "</th>");
-      };
+        };
     });
     $("#table-browse-header").append("</tr>");
     $("#table-browse-body").html("");
-    for (var i = 0; i < numrow; i++) {
-      $("#table-browse-body").append("<tr>");
-      $.each(parsed[i], function(key, value) {
+    for (var i = startrowindex; i < endrowindex; i++) {
+        $("#table-browse-body").append("<tr>");
+        $.each(parsed[i], function(key, value) {
         if (typeof checkedcolumns !== "undefined") {
-          if (checkedcolumns.includes(key)) {
+            if (checkedcolumns.includes(key)) {
             $("#table-browse-body").append("<td>" + value + "</td>");
-          };
+            };
         } else {
-          $("#table-browse-body").append("<td>" + value + "</td>");
+            $("#table-browse-body").append("<td>" + value + "</td>");
         }
-      });
-      $("#table-browse-body").append("</tr>");
-    }
-  }, "text")
-  .done(function() {
+        });
+        $("#table-browse-body").append("</tr>");
+    };
     $("#preview-button").text("Apply");
-  })
-}
+};
 $(document).ready(function(){
-  $("#dataset-select").change(function() {
-    var datasetname = $("#dataset-select").val();
-    var filebasename = GetDsBasename(datasetname);
-    $.get("../_data/datasets/" + filebasename + ".tsv", function(data) {
-      data = data.replace(/\t/g, ",");
-      var parsed = $.csv.toObjects(data);
-      $("#dscolumns-select").html("");
-      var checkbox_idx = 1;
-      $.each(parsed[0], function(key, value) {
-        $("#dscolumns-select").append("<div class=\"divcheckbox\"><label for=\"columns-select-box-"+checkbox_idx+"\" class=\"labelcheckbox\"><input type=\"checkbox\" id=\"columns-select-box-"+checkbox_idx+"\" checked />" + key + "</label></div>");
-        checkbox_idx += 1;
-      });
-    }, "text")
-  });
-  $("#dataset-select").change(function() {
-      ShowTable();
-  });
-  $("#dscolumns-select").ready(function() {
-    $("#preview-button").click(function() {
-      var checkedcolumns = GetSelectedColumns();
-      ShowTable(checkedcolumns);
+    var parsed = LoadDataset();
+    UpdateDatasetColumns(parsed);
+    UpdatePagination(parsed);
+    ShowTable(parsed);
+    $("#dataset-select").change(function() {
+        parsed = LoadDataset();
+        UpdateDatasetColumns(parsed);
+        UpdatePagination(parsed);
+        ShowTable(parsed);
     });
-  })
+    $("#dscolumns-select").ready(function() {
+        $("#preview-button").click(function() {
+            var checkedcolumns = GetSelectedColumns();
+            UpdatePagination(parsed);
+            ShowTable(parsed, checkedcolumns);
+        });
+    });
 });
-
 </script>
