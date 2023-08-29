@@ -73,10 +73,13 @@ div.divcheckbox {
 }
 </style>
 <form id="dscolumns-select"></form>
-<div><span id="pagination-para" style="float: left">Page: </span><span style="float: right"><label for="page-input" style="display: flex"><a id="page-select" href="#browse" class="btn btn--primary">Jump to Page</a><input type="number" id="page-input" maxlength="4" style="width: 4em"></label></span></div>
+<div><span id="pagination-para" style="float: left">Page: </span><span style="float: right"><label for="page-input" style="display: flex"><a id="page-select" href="#browse" class="btn btn--primary">Jump to Page</a><input type="number" id="page-input" maxlength="4" style="width: 4em"></label></span></div><br>
 <style>
 td {
   white-space: nowrap;
+}
+th {
+  cursor: pointer;
 }
 </style>
 <p class="text-center"><table id="table-browse">
@@ -131,11 +134,7 @@ function UpdatePagination(parsed) {
     var numpages = Math.ceil(parsed.length / numrows);
     const shownumpages = 3;
     for (let i = 1; i <= numpages; i++) {
-        $("#pagination-para").append("<a id=\"page-" + i + "\" href=\"#browse\" class=\"btn btn--inverse\">" + i + "</a> ");
-        $("#page-" + i).click(function() {
-            ChangePage(i);
-            ShowTable(parsed, GetSelectedColumns(), i-1);
-        });
+        $("#pagination-para").append("<a name=\"page-button\" id=\"page-" + i + "\" href=\"#browse\" class=\"btn btn--inverse\">" + i + "</a> ");
         if ((i <= shownumpages) || (i === numpages)) {
         } else {
             $("#page-" + i).hide();
@@ -150,6 +149,7 @@ function UpdatePagination(parsed) {
     $("#page-1").attr("class", "btn btn--light-outline");
 };
 function ChangePage(pageindex) {
+    var pageindex = parseInt(pageindex);
     const shownumpages = 2;
     var numpages = $("#pagination-para a").length;
     $.each($("#pagination-para a"), function(index, element) {
@@ -195,12 +195,13 @@ function ShowTable(parsed, checkedcolumns, startindex=0) {
     $("#table-browse-header").html("");
     $("#table-browse-header").append("<tr>");
     $.each(parsed[0], function(key, value) {
+        var header = "<th id=\"tableheader-" + key + "\">" + key + "</th>"
         if (typeof checkedcolumns !== "undefined") {
         if (checkedcolumns.includes(key)) {
-            $("#table-browse-header").append("<th>" + key + "</th>");
+            $("#table-browse-header").append(header);
         };
         } else {
-        $("#table-browse-header").append("<th>" + key + "</th>");
+        $("#table-browse-header").append(header);
         };
     });
     $("#table-browse-header").append("</tr>");
@@ -219,12 +220,46 @@ function ShowTable(parsed, checkedcolumns, startindex=0) {
         $("#table-browse-body").append("</tr>");
     };
     $("#preview-button").text("Apply");
+    $("th").click(function() {
+        var isTrue = String($(this).attr("asc")).toLowerCase();
+        var ascending = isTrue !== "true";
+        var sortedcolname = $(this).text();
+        sorted = SortTable(parsed, sortedcolname, ascending);
+        var sortedcolid = $(this).attr("id");
+        ShowTable(sorted, checkedcolumns, startindex);
+        if (ascending) {
+            var icon = "<i class=\"fas fa-sort-up\">";
+        } else {
+            var icon = "<i class=\"fas fa-sort-down\">";
+        }
+        $("#"+sortedcolid).html(icon + sortedcolname + "</i>");
+        $("#"+sortedcolid).attr({"asc": ascending});
+    });
 };
+function comparer(index) {
+    return function(a, b) {
+        var valA = a[index], valB = b[index];
+        return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
+    }
+};
+function SortTable(parsed, index, asc=true) {
+    var sorted = parsed.sort(comparer(index));
+    if (!asc) {
+        sorted.reverse();
+    };
+    return sorted
+}
 $(document).ready(function(){
     var parsed = LoadDataset();
     UpdateDatasetColumns(parsed);
     UpdatePagination(parsed);
     ShowTable(parsed);
+    $("#tableheader-ab_idx").click();
+    $("a[name='page-button']").click(function() {
+        var pageindex = $(this).text();
+        ChangePage(pageindex);
+        ShowTable(parsed, GetSelectedColumns(), pageindex-1);
+    });
     $("#dataset-select").change(function() {
         parsed = LoadDataset();
         UpdateDatasetColumns(parsed);
