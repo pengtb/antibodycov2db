@@ -54,12 +54,12 @@ $(document).ready(function(){
 </script>
 
 #### Browse
-Number of rows: 
+<div>Number of rows: 
 <select name="preview-numrow" id="numrow-select">
   <option value="10" selected>10</option>
   <option value="50">50</option>
   <option value="100">100</option>
-</select><br>
+</select></div>
 <p><span>Columns to show:  </span><span style="float: right"><a href="#browse" class="btn btn--primary" id="preview-button">Apply</a></span></p>
 <style>
 label.labelcheckbox {
@@ -73,7 +73,7 @@ div.divcheckbox {
 }
 </style>
 <form id="dscolumns-select"></form>
-<p id="pagination-para" class="text-center">Page: </p>
+<div><span id="pagination-para" style="float: left">Page: </span><span style="float: right"><label for="page-input" style="display: flex"><a id="page-select" href="#browse" class="btn btn--primary">Jump to Page</a><input type="number" id="page-input" maxlength="4" style="width: 4em"></label></span></div>
 <style>
 td {
   white-space: nowrap;
@@ -237,6 +237,15 @@ $(document).ready(function(){
             UpdatePagination(parsed);
             ShowTable(parsed, checkedcolumns);
         });
+    });
+    $("#page-select").click(function() {
+        var pageindex = $("#page-input").val();
+        if ((pageindex >= 1) && (pageindex <= $("#pagination-para a").length)) {
+            $("#page-"+pageindex).click();        
+        } else if (pageindex === "") {
+        } else {
+            alert("Invalid page number.");
+        }
     });
 });
 </script>
