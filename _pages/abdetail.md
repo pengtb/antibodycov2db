@@ -2,7 +2,10 @@
 permalink: /abdetail/
 title: "Details"
 header: 
-    overlay_color: "#333"
+    # overlay_color: "#333"
+    overlay_image: "/assets/images/header.png"
+    overlay_filter: 0.5
+    caption: "Credit: [**EPIGENTEK**](https://www.epigentek.com/)"
     # actions:
     #  - label: "Download All"
     #    url: "https://github.com"
