@@ -36,13 +36,13 @@ function UpdateDatasetIntro() {
     var table2dl = $("#dataset-select").val();
     if (table2dl === "classification") {
       $("#dataset-intro-1").html("The <em><strong>classification</strong></em> dataset includes all collected antibodies that show direct binding (or not binding) evidence to WT or mutant SARS-CoV2 spike RBD. The dataset is designed for discovery of new binding antibodies only using <em>heavy/light chain variable-domain sequences</em> of antibodies and sequence of RBD. <em>Region information</em> of sequences (a.k.a. CDR/FR) is also included for prediction.");
-      $("#dataset-intro-2").html("For collected samples are mostly positive (mainly because of manual selection), antibodies showing clear binding evidence to other epitopes of spike protein (such as NTD) or even other proteins are included as well as negative samples. The dataset is split into training, validation and test sets, as shown in the <em>ds</em> column, meanwhile positive/negative samples and samples targeting variants of RBD are both evenly distributed in each set. The test set can be further split into 3 subset: unseen WT, unseen Omicron and seen Omicron, as shown in the <em>usage</em> column. \"Unseen\" samples are those not seen in the training/validation sets, while \"seen\" samples are the opposite.");
+      $("#dataset-intro-2").html("For collected samples are mostly positive (mainly because of manual selection), antibodies showing clear binding evidence to other epitopes of spike protein (such as NTD) or even other proteins are included as well as negative samples. The dataset is split into training, validation and test sets, as shown in the <em>ds</em> column, meanwhile positive/negative samples and samples targeting variants of RBD are both evenly distributed in each set. The test set can be further split into 3 subset: unseen WT, unseen Omicron and seen Omicron, as shown in the <em>usage</em> column. 'Unseen' samples are those not seen in the training/validation sets, while 'seen' samples are the opposite.");
     } else if (table2dl === "ranking") {
       $("#dataset-intro-1").html("The <em><strong>ranking</strong></em> dataset includes all collected antibodies that have quantitative binding affinities against WT RBD. The dataset is designed for ranking of binding antibodies only using <em>heavy/light chain variable-domain sequences</em> of antibodies. <em>Region information</em> of sequences (a.k.a. CDR/FR) is also included for prediction. Additionally, binding affinities measured under various conditions are all included to increase number of samples. Specifically, the experimental methods can be BLI or SPR, as shown in the <em>evidence</em> column and forms of antibodies can be IgG or Fab, as shown in the <em>ab_type</em> column.");
       $("#dataset-intro-2").html("The dataset is split into training, validation and test sets, as shown in the <em>ds</em> column, meanwhile samples of difference scales of binding affinities (a.k.a. log<sub>10</sub> of binding affinities) are evenly distributed in each set. Split of dataset is shown in the <em>ds</em> column.");
     } else if (table2dl === "epitope prediction") {
       $("#dataset-intro-1").html("The <em><strong>epitope prediction</strong></em> dataset includes all collected antibodies that have complex structures with WT or mutant SARS-CoV2 spike RBD. The dataset is designed for prediction of epitopes (a.k.a. binding sites of RBD) only using <em>heavy/light chain variable-domain sequences</em> of antibodies and sequence of RBD. Epitopes are represented as binary vectors of length 223, indicating which residues are the binding sites of RBD, as shown in the <em>rbd_contacts</em> column. To remove redundancy, for antibodies with multiple complex structures available, only the one with most contacts to RBD is kept. <em>Region information</em> of antibody sequences (a.k.a. CDR/FR) is also included for prediction. ");
-      $("#dataset-intro-2").html("The dataset is split into training, validation and test sets, as shown in the <em>ds</em> column, meanwhile samples of different epitope groups (annotated as ith key residues of each epitope group from <a href=\"https://www.nature.com/articles/s41586-022-04980-y\">Cao's work</a>) and samples targeting variants of RBD are both evenly distributed in each set. Split of dataset is shown in the <em>ds</em> column. The test set can be further split into 3 subset: unseen WT, unseen Omicron and seen Omicron, as shown in the <em>usage</em> column. \"Unseen\" samples are those not seen in the training/validation sets, while \"seen\" samples are the opposite.");
+      $("#dataset-intro-2").html("The dataset is split into training, validation and test sets, as shown in the <em>ds</em> column, meanwhile samples of different epitope groups (annotated as ith key residues of each epitope group from <a href='https://www.nature.com/articles/s41586-022-04980-y'>Cao's work</a>) and samples targeting variants of RBD are both evenly distributed in each set. Split of dataset is shown in the <em>ds</em> column. The test set can be further split into 3 subset: unseen WT, unseen Omicron and seen Omicron, as shown in the <em>usage</em> column. 'Unseen' samples are those not seen in the training/validation sets, while 'seen' samples are the opposite.");
     } else {
       $("#dataset-intro-1").text("");
     }
@@ -73,7 +73,7 @@ div.divcheckbox {
 }
 </style>
 <form id="dscolumns-select"></form>
-<div><span id="pagination-para" style="float: left">Page: </span><span style="float: right"><label for="page-input" style="display: flex"><a id="page-select" href="#browse" class="btn btn--primary">Jump to Page</a><input type="number" id="page-input" maxlength="4" style="width: 4em"></label></span></div><br>
+<div><span id="pagination-para" style="float: left">Page: </span><span style="float: right"><label for="page-input" style="display: flex"><a id="page-select" href="#browse" class="btn btn--primary">Jump to Page</a><input type="number" id="page-input" maxlength="4" style="width: 3em" min="1"></label></span></div><br>
 <style>
 td {
   white-space: nowrap;
@@ -124,7 +124,7 @@ function UpdateDatasetColumns(parsed) {
     $("#dscolumns-select").html("");
     var checkbox_idx = 1;
     $.each(parsed[0], function(key, value) {
-        $("#dscolumns-select").append("<div class=\"divcheckbox\"><label for=\"columns-select-box-"+checkbox_idx+"\" class=\"labelcheckbox\"><input type=\"checkbox\" id=\"columns-select-box-"+checkbox_idx+"\" checked />" + key + "</label></div>");
+        $("#dscolumns-select").append("<div class='divcheckbox'><label for='columns-select-box-"+checkbox_idx+"' class='labelcheckbox'><input type='checkbox' id='columns-select-box-"+checkbox_idx+"' checked />" + key + "</label></div>");
         checkbox_idx += 1;
     });
 };
@@ -134,15 +134,15 @@ function UpdatePagination(parsed) {
     var numpages = Math.ceil(parsed.length / numrows);
     const shownumpages = 3;
     for (let i = 1; i <= numpages; i++) {
-        $("#pagination-para").append("<a name=\"page-button\" id=\"page-" + i + "\" href=\"#browse\" class=\"btn btn--inverse\">" + i + "</a> ");
+        $("#pagination-para").append("<a name='page-button' id='page-" + i + "' href='#browse' class='btn btn--inverse'>" + i + "</a> ");
         if ((i <= shownumpages) || (i === numpages)) {
         } else {
             $("#page-" + i).hide();
         };
         if (i === 1) {
-            $("#pagination-para").append("<span id=\"page-sep-first\"> </span>");
+            $("#pagination-para").append("<span id='page-sep-first'> </span>");
         } else if (i === numpages-1) {
-            $("#pagination-para").append("<span id=\"page-sep-last\">... </span>");
+            $("#pagination-para").append("<span id='page-sep-last'>... </span>");
         } else {
         };
     };
@@ -195,7 +195,7 @@ function ShowTable(parsed, checkedcolumns, startindex=0) {
     $("#table-browse-header").html("");
     $("#table-browse-header").append("<tr>");
     $.each(parsed[0], function(key, value) {
-        var header = "<th id=\"tableheader-" + key + "\">" + key + "</th>"
+        var header = "<th id='tableheader-" + key + "'>" + key + "</th>"
         if (typeof checkedcolumns !== "undefined") {
         if (checkedcolumns.includes(key)) {
             $("#table-browse-header").append(header);
@@ -209,10 +209,13 @@ function ShowTable(parsed, checkedcolumns, startindex=0) {
     for (var i = startrowindex; i < endrowindex; i++) {
         $("#table-browse-body").append("<tr>");
         $.each(parsed[i], function(key, value) {
-        if (typeof checkedcolumns !== "undefined") {
-            if (checkedcolumns.includes(key)) {
-            $("#table-browse-body").append("<td>" + value + "</td>");
+            if (key === "ab_idx") {
+                value = "<a href='../abdetail/?ab_idx=" + value + "'>" + value + "</a>";
             };
+            if (typeof checkedcolumns !== "undefined") {
+                if (checkedcolumns.includes(key)) {
+                $("#table-browse-body").append("<td>" + value + "</td>");
+                };
         } else {
             $("#table-browse-body").append("<td>" + value + "</td>");
         }
@@ -228,9 +231,9 @@ function ShowTable(parsed, checkedcolumns, startindex=0) {
         var sortedcolid = $(this).attr("id");
         ShowTable(sorted, checkedcolumns, startindex);
         if (ascending) {
-            var icon = "<i class=\"fas fa-sort-up\">";
+            var icon = "<i class='fas fa-sort-up'>";
         } else {
-            var icon = "<i class=\"fas fa-sort-down\">";
+            var icon = "<i class='fas fa-sort-down'>";
         }
         $("#"+sortedcolid).html(icon + sortedcolname + "</i>");
         $("#"+sortedcolid).attr({"asc": ascending});
@@ -265,6 +268,11 @@ $(document).ready(function(){
         UpdateDatasetColumns(parsed);
         UpdatePagination(parsed);
         ShowTable(parsed);
+        $("a[name='page-button']").click(function() {
+            var pageindex = $(this).text();
+            ChangePage(pageindex);
+            ShowTable(parsed, GetSelectedColumns(), pageindex-1);
+        });
     });
     $("#dscolumns-select").ready(function() {
         $("#preview-button").click(function() {

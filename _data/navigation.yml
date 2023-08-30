@@ -10,12 +10,27 @@ main:
 
 side:
   - title: "Getting Started"
+    url: /
     children:
       - title: "What is this db for?"
         url: /#what-is-this-db-for
   - title: "Download"
+    url: /download/
     children:
       - title: "Download all"
         url: /download/#download-all
       - title: "Download one"
         url: /download/#download-one
+  - title: "Browse"
+    url: /browse/
+  - title: "Search"
+    url: /search/
+    children:
+      - title: "By ID"
+        url: /search/#search-by-id
+      - title: "By name"
+        url: /search/#search-by-name
+      - title: "By sequence"
+        url: /search/#search-by-sequence
+  - title: "Analysis"
+    url: /analysis/
