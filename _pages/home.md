@@ -6,7 +6,10 @@ permalink: /
 
 excerpt: "A database for antibodies targeting SARS-CoV2 spike WT/mutant RBD."
 header: 
-    overlay_color: "#333"
+    # overlay_color: "#333"
+    overlay_image: "/assets/images/header.png"
+    overlay_filter: 0.5
+    caption: "Diagram Credit: [**EPIGENTEK**](https://www.epigentek.com/)"
     # actions:
     #  - label: "Download All"
     #    url: "https://github.com"
