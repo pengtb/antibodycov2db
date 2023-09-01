@@ -37,6 +37,9 @@ div.structure {
 td.clickable {
     cursor: pointer;
 }
+i.clickable {
+    cursor: pointer;
+}
 </style>
 <!-- <link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-3.1.0.css"> -->
 <link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-light-3.1.0.css">
@@ -125,18 +128,17 @@ function seq_callback(selector="td[column='Hseq']", style="overflow-y: scroll; o
             var num_lines = Math.ceil(seq.length / linelength);
             $(td).html("");
             for (var i = 0; i < num_lines; i++) {
-                var styleddiv = "<div id='fvseq-line-"+i+"' style='"+style+"'>";
+                var styleddiv = "<div id='fvseq-line-"+i+"' style='"+style+"' datatype='seq'>";
                 var subseq = seq.substring(i * linelength, (i + 1) * linelength);
                 styleddiv = styleddiv + subseq + "</div>";
                 $(td).append(styleddiv);
             };
-            $(td).append("<div id='temp-region'></div>");
-            $("#temp-region").hide();
+            $(td).append("<div id='temp-region' hidden></div>");
             LoadData("../_data/tables/region.csv", "temp-region", function() {}, function(value) { return value["seq"]===seq }, "region", false, onlyfirst=true);
             var region = $("#temp-region").text().replace(/\s+/g, "");
             for (var i = 0; i < num_lines; i++) {
                 var subregion = region.substring(i * linelength, (i + 1) * linelength);
-                var styledregiondiv = "<div id='fvregion-line-"+i+"' style='"+style+"'>"+subregion+"</div>";
+                var styledregiondiv = "<div id='fvregion-line-"+i+"' style='"+style+"' datatype='region'>"+subregion+"</div>";
                 $(td).find("#fvseq-line-"+i).after(styledregiondiv);
             };
             $("#temp-region").remove();
@@ -144,6 +146,14 @@ function seq_callback(selector="td[column='Hseq']", style="overflow-y: scroll; o
             var styleddiv = "<div style='"+style+"'>";
             $(td).html(styleddiv + seq + "</div>");
         }
+    });
+};
+function copy_fvseq(tocopy_id) {
+    var tocopytext = "";
+    $.each($("#"+tocopy_id+" div[datatype='seq']"), function(idx, div) {
+        var partseq = $(div).text();
+        tocopytext += partseq;
+        navigator.clipboard.writeText(tocopytext);
     });
 };
 function db_callback(selector) {
@@ -180,7 +190,7 @@ function pdb_callback(selector, columnname="HC_instance_id") {
     });
 };
 function visualize_epitope(epitope_viewerInstance, epitopes_selections) {
-    epitope_viewerInstance.visual.reset({ camera: true, theme: true });
+    epitope_viewerInstance.visual.reset({ camera: false, theme: true });
 //    epitope_viewerInstance.visual.focus([{start_residue_number: 319, end_residue_number: 541}]);
     epitope_viewerInstance.visual.select({data:[{start_residue_number: 319, end_residue_number: 541, focus: true, sideChain: false}], nonSelectedColor:{r:255, g:255, b:255}});
 //    epitope_viewerInstance.visual.clearSelection();
@@ -315,6 +325,7 @@ $(document).ready(function(){
         });
     });
 });
+
 </script>
 <h1><span><em>names</em> of this antibody: </span><span id="detail-all_names">Loading...</span></h1>
 # Binding evidence
@@ -335,9 +346,9 @@ $(document).ready(function(){
 </ul>
 #### Predicted variable domain sequences & split of CDR/FR
 <ul>
-<li id="header-detail-hvseq">Heavy chain
+<li id="header-detail-hvseq">Heavy Chain <i class="fas fa-copy clickable" onclick="copy_fvseq('detail-hvseq')"></i>
 <div class="notice" id="detail-hvseq" dbsource="trunct2fv">>Loading...</div></li>
-<li id="header-detail-lvseq">Light Chain
+<li id="header-detail-lvseq">Light Chain <i class="fas fa-copy clickable" onclick="copy_fvseq('detail-lvseq')"></i>
 <div class="notice" id="detail-lvseq" dbsource="trunct2fv">Loading...</div></li>
 </ul>
 #### Identified V gene
@@ -366,7 +377,6 @@ var options = {
 var viewerContainer = document.getElementById('visualize-epitope');
 epitope_viewerInstance.render(viewerContainer, options);
 epitope_viewerInstance.events.loadComplete.subscribe(function() {
-    epitope_viewerInstance.visual.reset({ camera: true, theme: true });
 //    epitope_viewerInstance.visual.focus([{start_residue_number: 319, end_residue_number: 541}]);
     epitope_viewerInstance.visual.select({data:[{start_residue_number: 319, end_residue_number: 541, focus: true, sideChain: false}], nonSelectedColor:{r:255, g:255, b:255}});
 //    epitope_viewerInstance.visual.clearSelection();
