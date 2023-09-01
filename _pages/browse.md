@@ -196,34 +196,34 @@ function ShowTable(parsed, checkedcolumns, startindex=0) {
     var endrowindex = (startindex + 1) * numrow;
     $("#preview-button").text("Loading...");
     $("#table-browse-header").html("");
-    $("#table-browse-header").append("<tr>");
+    $("#table-browse-header").append("<tr></tr>");
     $.each(parsed[0], function(key, value) {
         var header = "<th id='tableheader-" + key + "'>" + key + "</th>"
         if (typeof checkedcolumns !== "undefined") {
-        if (checkedcolumns.includes(key)) {
+            if (checkedcolumns.includes(key)) {
+                $("#table-browse-header").append(header);
+            };
+        } else {
             $("#table-browse-header").append(header);
         };
-        } else {
-        $("#table-browse-header").append(header);
-        };
     });
-    $("#table-browse-header").append("</tr>");
     $("#table-browse-body").html("");
     for (var i = startrowindex; i < endrowindex; i++) {
-        $("#table-browse-body").append("<tr>");
+        var row_contents = "<tr>";
         $.each(parsed[i], function(key, value) {
             if (key === "ab_idx") {
                 value = "<a href='../abdetail/?ab_idx=" + value + "'>" + value + "</a>";
             };
             if (typeof checkedcolumns !== "undefined") {
                 if (checkedcolumns.includes(key)) {
-                $("#table-browse-body").append("<td>" + value + "</td>");
+                    $("#table-browse-body").append("<td>" + value + "</td>");
                 };
-        } else {
-            $("#table-browse-body").append("<td>" + value + "</td>");
-        }
+            } else {
+                row_contents += "<td>" + value + "</td>";
+            }
         });
-        $("#table-browse-body").append("</tr>");
+        row_contents += "</tr>";
+        $("#table-browse-body").append(row_contents);
     };
     $("#preview-button").text("Apply");
     $("th").click(function() {
