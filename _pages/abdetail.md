@@ -29,7 +29,19 @@ td {
     font-size: 1.2em; 
     word-break: break-all;
 }
+div.structure {
+    width: 800;
+    height: 400px;
+    position:relative;
+}
+td.clickable {
+    cursor: pointer;
+}
 </style>
+<!-- <link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-3.1.0.css"> -->
+<link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-light-3.1.0.css">
+<script type="text/javascript" src="https://www.ebi.ac.uk/pdbe/pdb-component-library/js/pdbe-molstar-plugin-3.1.0.js"></script>
+<script type="text/javascript" src="https://raw.githubusercontent.com/douglascrockford/JSON-js/master/json2.js"></script>
 <!-- receive parameters from url -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script>
@@ -41,7 +53,6 @@ function GetQueryString(name) {
 };
 </script>
 <!-- show collected info -->
-<script src="../assets/js/plugins/jquery.csv.js"></script>
 <script>
 function LoadData(filepath, detailid, donecallback, subsetfunction, showcolname, async=true, onlyfirst=false) {
     $.ajax({
@@ -168,24 +179,42 @@ function pdb_callback(selector, columnname="HC_instance_id") {
         $(td).html(formatted_pdb);
     });
 };
+function visualize_epitope(epitope_viewerInstance, epitopes_selections) {
+    epitope_viewerInstance.visual.reset({ camera: true, theme: true });
+//    epitope_viewerInstance.visual.focus([{start_residue_number: 319, end_residue_number: 541}]);
+    epitope_viewerInstance.visual.select({data:[{start_residue_number: 319, end_residue_number: 541, focus: true, sideChain: false}], nonSelectedColor:{r:255, g:255, b:255}});
+//    epitope_viewerInstance.visual.clearSelection();
+    epitope_viewerInstance.visual.select(epitopes_selections);
+    epitope_viewerInstance.visual.highlight(epitopes_selections);
+};
 function epitope_callback(toshow_id) {
     $.ajax({
         url: "../_data/tables/epitope_group.csv",
         type: "GET",
-        async: true,
+        async: false,
         dataType: "text",
         success: function(data) {
             var parsed = $.csv.toObjects(data);
             $("#"+toshow_id+" thead tr").append("<th>epitope</th>");
             $.each($("#"+toshow_id+" tbody td[column='HC_instance_id']"), function(key, td) {
                 var hc_instance_id = $(td).text();
-                var epitope = "";
+                var epitopes = "";
                 $.each(parsed, function(key, value) {
                     if (value["HC_instance_id"] === hc_instance_id) {
-                        epitope = value["epitope"];
+                        epitopes = value["epitope"];
                     };
                 });
-                $(td).parent().append("<td>"+epitope+"</td>");
+                var epitopes_selections = [];
+                $.each(epitopes.split(";"), function(key, value) {
+                    epitopes_selections.push({
+                        color:{r:0, g:0, b:255},
+                        residue_number: parseInt(value.substring(0, value.length-1)),
+                        sideChain: false,
+                        focus: false,
+                    });
+                });
+                var serialized_epitopes_selections = "{data:" + JSON.stringify(epitopes_selections) + "}";
+                $(td).parent().append("<td class='clickable' onclick='visualize_epitope(epitope_viewerInstance, " + serialized_epitopes_selections + ")'>"+epitopes+"</td>");
             })
         }
     });
@@ -251,7 +280,7 @@ $(document).ready(function(){
         $.ajax({
             url: "../_data/tables/pdb_chain_idmapping.csv",
             type: "GET",
-            async: true,
+            async: false,
             dataType: "text",
             success: function(data) {
                 var parsed = $.csv.toObjects(data);
@@ -286,7 +315,6 @@ $(document).ready(function(){
         });
     });
 });
-
 </script>
 <h1><span><em>names</em> of this antibody: </span><span id="detail-all_names">Loading...</span></h1>
 # Binding evidence
@@ -319,6 +347,54 @@ $(document).ready(function(){
 #### Epitopes
 <div class="notice" id="detail-pdb_ab" dbsource="pdb_chain_idmapping">Loading...</div>
 <div class="notice" id="detail-pdb_nb" dbsource="pdb_chain_idmapping">Loading...</div>
-<div id="visualize-epitope"></div>
-#### Predicted apo-form structures
-<div id="visualize-igfold"></div>
+<div id="visualize-epitope" class="structure" hidden></div>
+<h4>Predicted apo-form structures</h4>
+<div id="loading-visualize-igfold">Loading...</div>
+<div id="visualize-igfold" class="structure" hidden></div>
+
+<script>
+$("#visualize-epitope").show();
+var epitope_viewerInstance = new PDBeMolstarPlugin();
+var options = {
+    customData: { url: 'https://www.ebi.ac.uk/pdbe/model-server/v1/7wz2/atoms?label_entity_id=1&auth_asym_id=A&encoding=bcif', format: 'cif', binary:true },
+    hideControls: true,
+    landscape: true,
+    pdbeLink: true,
+    sequencePanel: true,
+    bgColor: {r:255, g:255, b:255},
+}
+var viewerContainer = document.getElementById('visualize-epitope');
+epitope_viewerInstance.render(viewerContainer, options);
+epitope_viewerInstance.events.loadComplete.subscribe(function() {
+    epitope_viewerInstance.visual.reset({ camera: true, theme: true });
+//    epitope_viewerInstance.visual.focus([{start_residue_number: 319, end_residue_number: 541}]);
+    epitope_viewerInstance.visual.select({data:[{start_residue_number: 319, end_residue_number: 541, focus: true, sideChain: false}], nonSelectedColor:{r:255, g:255, b:255}});
+//    epitope_viewerInstance.visual.clearSelection();
+});
+// visualize igfold structures
+var ab_idx = GetQueryString("ab_idx");
+var structurefilepath = "../assets/igfold/"+ab_idx+".pdb";
+$.ajax({
+    url: structurefilepath,
+    type: "HEAD",
+    error: function() {
+        $("#loading-visualize-igfold").text("Structures not available.");
+    },
+    success: function() {
+        $("#loading-visualize-igfold").text("");
+        $("#visualize-igfold").show();
+        var viewerInstance = new PDBeMolstarPlugin();
+        var options = {
+            customData: { url: structurefilepath, format: 'pdb'},
+            hideControls: true,
+            landscape: true,
+            pdbeLink: false,
+            sequencePanel: true,
+            bgColor: {r:255, g:255, b:255},
+        }
+        var viewerContainer = document.getElementById('visualize-igfold');
+        viewerInstance.render(viewerContainer, options);
+    }
+})
+
+</script>
