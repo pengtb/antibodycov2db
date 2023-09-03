@@ -21,19 +21,40 @@ tsv_reader:
     headers: true
     encoding: utf-8
 ---
-# Browse datasets
-Select a processed dataset:
-<select name="dataset2dl" id="dataset-select">
-  <option value="classification">classification</option>
-  <option value="ranking" selected>ranking</option>
-  <option value="epitope prediction">epitope prediction</option>
-</select><br>
-
-#### Introduction
-<p id="dataset-intro-1"></p>
-<p id="dataset-intro-2"></p>
+<style>
+label.labelcheckbox {
+  display: flex;
+  text-indent: 15px;
+  padding: 5px;
+}
+div.divcheckbox {
+  display: inline-block;
+  line-height: 0.75;
+}
+td {
+  white-space: nowrap;
+}
+th {
+  cursor: pointer;
+}
+summary {
+    display: inline;
+    cursor: pointer;
+}
+summary h2 {
+    display: inline;
+    font-size: 1.1em;
+}
+summary::-webkit-details-marker {
+    display: none;
+}
+details[open] summary * i[class="fas fa-angle-right"] {
+    transform: rotate(90deg);
+}
+</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <!-- change introduction according to selected -->
+
 <script>
 function UpdateDatasetIntro() {
     var table2dl = $("#dataset-select").val();
@@ -56,39 +77,6 @@ $(document).ready(function(){
 });
 </script>
 
-#### Browse
-<div>Number of rows: 
-<select name="preview-numrow" id="numrow-select">
-  <option value="10" selected>10</option>
-  <option value="50">50</option>
-  <option value="100">100</option>
-</select></div>
-<p><span>Columns to show:  </span><span style="float: right"><a href="#browse" class="btn btn--primary" id="preview-button">Apply</a></span></p>
-<style>
-label.labelcheckbox {
-  display: flex;
-  text-indent: 15px;
-  padding: 5px;
-}
-div.divcheckbox {
-  display: inline-block;
-  line-height: 0.75;
-}
-</style>
-<form id="dscolumns-select"></form>
-<div><span id="pagination-para" style="float: left">Page: </span><span style="float: right"><label for="page-input" style="display: flex"><a id="page-select" href="#browse" class="btn btn--primary">Jump to Page</a><input type="number" id="page-input" maxlength="4" style="width: 3em" min="1"></label></span></div><br>
-<style>
-td {
-  white-space: nowrap;
-}
-th {
-  cursor: pointer;
-}
-</style>
-<p class="text-center"><table id="table-browse">
-<thead id="table-browse-header"></thead>
-<tbody id="table-browse-body"></tbody>
-</table></p>
 <!-- load & show & update table -->
 <script src="../assets/js/plugins/jquery.csv.js"></script>
 <script>
@@ -295,3 +283,35 @@ $(document).ready(function(){
     });
 });
 </script>
+
+<h1 id="header-browse-datasets">Browse datasets</h1>
+<p>Select a processed dataset:
+<select name="dataset2dl" id="dataset-select">
+  <option value="classification">classification</option>
+  <option value="ranking" selected>ranking</option>
+  <option value="epitope prediction">epitope prediction</option>
+</select></p>
+
+<details open><summary>
+<h2 id="header-introduction">Introduction  <i class="fas fa-angle-right"></i></h2></summary>
+<p id="dataset-intro-1"></p>
+<p id="dataset-intro-2"></p>
+</details>
+
+<details open><summary>
+<h2 id="header-browse">Browse  <i class="fas fa-angle-right"></i></h2></summary>
+<div>Number of rows: 
+<select name="preview-numrow" id="numrow-select">
+  <option value="10" selected>10</option>
+  <option value="50">50</option>
+  <option value="100">100</option>
+</select></div>
+<p><span>Columns to show:  </span><span style="float: right"><a href="#browse" class="btn btn--primary" id="preview-button">Apply</a></span></p>
+<form id="dscolumns-select"></form>
+<div><span id="pagination-para" style="float: left">Page: </span><span style="float: right"><label for="page-input" style="display: flex"><a id="page-select" href="#browse" class="btn btn--primary">Jump to Page</a><input type="number" id="page-input" maxlength="4" style="width: 3em" min="1"></label></span></div><br>
+<p class="text-center"><table id="table-browse">
+<thead id="table-browse-header"></thead>
+<tbody id="table-browse-body"></tbody>
+</table></p>
+</details>
+

@@ -5,6 +5,8 @@ main:
     url: /download/
   - title: "Browse"
     url: /browse/
+  - title: "Search"
+    url: /search/
   - title: "About"
     url: /about/
 
@@ -17,9 +19,9 @@ side:
   - title: "Download"
     url: /download/
     children:
-      - title: "Download all"
+      - title: "Download all in one"
         url: /download/#download-all
-      - title: "Download one"
+      - title: "Select one to download"
         url: /download/#download-one
   - title: "Browse"
     url: /browse/
@@ -34,3 +36,8 @@ side:
         url: /search/#search-by-sequence
   - title: "Analysis"
     url: /analysis/
+  - title: "Utilities"
+    url: /utilities/
+    children:
+      - title: "Mutant RBD sequence generator"
+        url: /utilities/#mutant-rbd-seq

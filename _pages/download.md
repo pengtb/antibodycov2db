@@ -21,32 +21,19 @@ tsv_reader:
     headers: true
     encoding: utf-8
 ---
-# One click for all {#download-all}
-Just click <a href="../compressed/all_db_tables.7z" download="all_db_tables.7z">here</a> to download all the tables in the database and <a href="../compressed/all_ds_tables.7z" download="all_ds_tables.7z">here</a> for all the processed datasets.
+<style>
+h2 {
+    font-size: 1.1em;
+}
+<style>
+td {
+  white-space: nowrap;
+}
+</style>
 
-# Or select one table to preview and download {#download-one}
-Please choose a table firstly: 
-<select name="table2dl" id="table-select">
-  <option value="name" selected>name</option>
-  <option value="evidence">evidence</option>
-  <option value="sequence">sequence</option>
-  <option value="record">record</option>
-  <option value="region">region</option>
-  <option value="num_domain">num_domain</option>
-  <option value="ab_type">ab_type</option>
-  <option value="trunct2fv">trunct2fv</option>
-  <option value="pdb_chain_idmapping">pdb_chain_idmapping</option>
-  <option value="pdb_ab_rbd_pairing">pdb_ab_rbd_pairing</option>
-  <option value="pdb_nb_rbd_pairing">pdb_nb_rbd_pairing</option>
-  <option value="epitope_group">epitope_group</option>
-  <option value="target_rbdseq">target_rbdseq</option>
-  <option value="vgene">vgene</option>
-</select>
-<a id="dbtable-dllink" href="../_data/tables/name.csv" download="name.csv" class="btn btn--primary">Download</a>
-#### Introduction
-<p id="dbtable-intro"></p>
 <!-- <script src="../assets/js/main.min.js"></script> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
 <!-- change introduction according to selected -->
 <script>
 function UpdateTableIntro() {
@@ -98,25 +85,10 @@ $(document).ready(function(){
   });
 });
 </script>
-#### Preview
-<p><span>Number of rows to show: </span>
-<select name="preview-numrow" id="numrow-select">
-  <option selected>10</option>
-  <option >20</option>
-  <option >50</option>
-</select>
-<span><a href="#preview" class="btn btn--primary" id="preview-button">Apply</a></span></p>
-<style>
-td {
-  white-space: nowrap;
-}
-</style>
-<p class="text-center"><table id="table-preview">
-<thead id="table-preview-header"></thead>
-<tbody id="table-preview-body"></tbody>
-</table></p>
+
 <!-- load & show & update table -->
 <script src="../assets/js/plugins/jquery.csv.js"></script>
+
 <script>
 function ShowTable() {
   var tablename = $("#table-select").val();
@@ -149,3 +121,42 @@ $(document).ready(function(){
   $("#table-select").change(ShowTable);
 });
 </script>
+
+# One click for all {#download-all}
+Just click <a href="../compressed/all_db_tables.7z" download="all_db_tables.7z">here</a> to download all the tables in the database and <a href="../compressed/all_ds_tables.7z" download="all_ds_tables.7z">here</a> for all the processed datasets.
+
+# Or select one table to preview and download {#download-one}
+Please choose a table firstly: 
+<select name="table2dl" id="table-select">
+  <option value="name" selected>name</option>
+  <option value="evidence">evidence</option>
+  <option value="sequence">sequence</option>
+  <option value="record">record</option>
+  <option value="region">region</option>
+  <option value="num_domain">num_domain</option>
+  <option value="ab_type">ab_type</option>
+  <option value="trunct2fv">trunct2fv</option>
+  <option value="pdb_chain_idmapping">pdb_chain_idmapping</option>
+  <option value="pdb_ab_rbd_pairing">pdb_ab_rbd_pairing</option>
+  <option value="pdb_nb_rbd_pairing">pdb_nb_rbd_pairing</option>
+  <option value="epitope_group">epitope_group</option>
+  <option value="target_rbdseq">target_rbdseq</option>
+  <option value="vgene">vgene</option>
+</select>
+<a id="dbtable-dllink" href="../_data/tables/name.csv" download="name.csv" class="btn btn--primary">Download</a>
+
+<h2 id="header-introduction">Introduction</h2>
+<p id="dbtable-intro"></p>
+
+<h2 id="header-preview">Preview</h2>
+<p><span>Number of rows to show: </span>
+<select name="preview-numrow" id="numrow-select">
+  <option selected>10</option>
+  <option >20</option>
+  <option >50</option>
+</select>
+<span><a href="#preview" class="btn btn--primary" id="preview-button">Apply</a></span></p>
+<p class="text-center"><table id="table-preview">
+<thead id="table-preview-header"></thead>
+<tbody id="table-preview-body"></tbody>
+</table></p>

@@ -40,6 +40,20 @@ td.clickable {
 i.clickable {
     cursor: pointer;
 }
+summary {
+    display: inline;
+    cursor: pointer;
+}
+summary h2 {
+    display: inline;
+    font-size: 1.1em;
+}
+summary::-webkit-details-marker {
+    display: none;
+}
+details[open] summary * i[class="fas fa-angle-right"] {
+    transform: rotate(90deg);
+}
 </style>
 <!-- <link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-3.1.0.css"> -->
 <link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-light-3.1.0.css">
@@ -327,15 +341,18 @@ $(document).ready(function(){
 });
 
 </script>
-<h1><span><em>names</em> of this antibody: </span><span id="detail-all_names">Loading...</span></h1>
-# Binding evidence
-<h4 id="header-detail-exp_evidence">Experimental evidence</h4>
-<div class="notice" id="detail-exp_evidence" dbsource="evidence">Loading...</div>
-<h4 id="header-detail-struct_evidence">Structural evidence</h4>
-<div class="notice" id="detail-struct_evidence" dbsource="evidence">Loading...</div>
 
-# Sequences
-#### Collected sequences
+<h1><span><em>names</em> of this antibody: </span><span id="detail-all_names">Loading...</span></h1>
+<h1 id="header-binding-evidence">Binding evidence</h1>
+<details open><summary>
+<h2 id="header-detail-exp_evidence">Experimental evidence  <i class="fas fa-angle-right"></i></h2></summary>
+<div class="notice" id="detail-exp_evidence" dbsource="evidence">Loading...</div></details>
+<details open><summary>
+<h2 id="header-detail-struct_evidence">Structural evidence  <i class="fas fa-angle-right"></i></h2></summary>
+<div class="notice" id="detail-struct_evidence" dbsource="evidence">Loading...</div></details>
+<h1 id="header-sequences">Sequences</h1>
+<details open><summary>
+<h2 id="header-collected-sequences">Collected sequences  <i class="fas fa-angle-right"></i></h2></summary>
 <ul>
 <li id="header-detail-pdb_record">from databases: PDB/GenBank/CovAb-Dab/INN
 <div class="notice" id="detail-pdb_record" dbsource="record">Loading...</div></li>
@@ -344,24 +361,32 @@ $(document).ready(function(){
 <li id="header-detail-transform_record">from combination/mutation/split of other antibody chain sequences
 <div class="notice" id="detail-transform_record" dbsource="record">Loading...</div></li>
 </ul>
-#### Predicted variable domain sequences & split of CDR/FR
+</details>
+<details open><summary>
+<h2 id="header-fv-region">Predicted variable domain sequences & split of CDR/FR  <i class="fas fa-angle-right"></i></h2></summary>
 <ul>
 <li id="header-detail-hvseq">Heavy Chain <i class="fas fa-copy clickable" onclick="copy_fvseq('detail-hvseq')"></i>
 <div class="notice" id="detail-hvseq" dbsource="trunct2fv">>Loading...</div></li>
 <li id="header-detail-lvseq">Light Chain <i class="fas fa-copy clickable" onclick="copy_fvseq('detail-lvseq')"></i>
 <div class="notice" id="detail-lvseq" dbsource="trunct2fv">Loading...</div></li>
 </ul>
-#### Identified V gene
+</details>
+<details open><summary>
+<h2 id="header-identified-vgene">Identified V gene  <i class="fas fa-angle-right"></i></h2></summary>
 <p class="notice"><span><em><strong>IGHV</strong></em> gene: </span><span id="detail-vhgene" dbsource="vgene">Loading...</span><br><span><em><strong>IGLV/IGKV</strong></em> gene: </span><span id="detail-vlgene" dbsource="vgene">Loading...</span></p>
-
-# Structures
-#### Epitopes
+</details>
+<h1 id="header-structures">Structures</h1>
+<details open><summary>
+<h2 id="header-epitope">Epitopes  <i class="fas fa-angle-right"></i></h2></summary>
 <div class="notice" id="detail-pdb_ab" dbsource="pdb_chain_idmapping">Loading...</div>
 <div class="notice" id="detail-pdb_nb" dbsource="pdb_chain_idmapping">Loading...</div>
 <div id="visualize-epitope" class="structure" hidden></div>
-<h4>Predicted apo-form structures</h4>
+</details>
+<details open><summary>
+<h2 id="header-igfold">Predicted apo-form structures <i class="fas fa-angle-right"></i></h2></summary>
 <div id="loading-visualize-igfold">Loading...</div>
 <div id="visualize-igfold" class="structure" hidden></div>
+</details>
 
 <script>
 $("#visualize-epitope").show();
