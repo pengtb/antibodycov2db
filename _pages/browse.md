@@ -78,7 +78,6 @@ $(document).ready(function(){
 </script>
 
 <!-- load & show & update table -->
-<script src="../assets/js/plugins/jquery.csv.js"></script>
 <script>
 function GetDsBasename(datasetname) {
   if (datasetname === "classification") {

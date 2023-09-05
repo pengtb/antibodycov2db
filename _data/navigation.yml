@@ -7,6 +7,8 @@ main:
     url: /browse/
   - title: "Search"
     url: /search/
+  - title: "Analysis"
+    url: /analysis/
   - title: "About"
     url: /about/
 
@@ -25,6 +27,11 @@ side:
         url: /download/#download-one
   - title: "Browse"
     url: /browse/
+    children:
+      - title: "Browse datasets"
+        url: /browse/#header-browse-datasets
+      - title: "Browse database by SQLite Viewer"
+        url: http://inloop.github.io/sqlite-viewer/?url=http://pengtb.github.io/antibodycov2db/assets/db/collected_0825.db
   - title: "Search"
     url: /search/
     children:
@@ -41,3 +48,5 @@ side:
     children:
       - title: "Mutant RBD sequence generator"
         url: /utilities/#mutant-rbd-seq
+      - title: "RBD epitope viewer"
+        url: /utilities/#rbd-epitope-viewer

@@ -25,7 +25,6 @@ tsv_reader:
 h2 {
     font-size: 1.1em;
 }
-<style>
 td {
   white-space: nowrap;
 }
@@ -85,9 +84,6 @@ $(document).ready(function(){
   });
 });
 </script>
-
-<!-- load & show & update table -->
-<script src="../assets/js/plugins/jquery.csv.js"></script>
 
 <script>
 function ShowTable() {
