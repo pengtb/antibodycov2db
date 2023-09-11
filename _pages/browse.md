@@ -242,6 +242,13 @@ function SortTable(parsed, index, asc=true) {
     };
     return sorted
 }
+function click_changecolor(element) {
+    if (element.style.color === "grey") {
+        element.style.color = "black";
+    } else {
+        element.style.color = "grey";
+    }
+}
 $(document).ready(function(){
     var parsed = LoadDataset();
     UpdateDatasetColumns(parsed);
@@ -280,6 +287,9 @@ $(document).ready(function(){
             alert("Invalid page number.");
         }
     });
+    $("details summary h2").click(function(){
+        click_changecolor(this);
+    })
 });
 </script>
 

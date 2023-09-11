@@ -58,94 +58,106 @@ tsv_reader:
 <script>
 $(document).ready(function() {
     $.ajax({
-          url: "../_data/tables/name.csv",
-          type: "GET",
-          async: false,
-          dataType: "text",
-          success: function(data) {
-              var parsed = $.csv.toObjects(data);
-              var valid_ids = [];
-              for (var i = 0; i < parsed.length; i++) {
-                  valid_ids.push(parsed[i]["ab_idx"]);
-              }
-              $("#search-by-id-button").click(function() {
-                  var id = $("#search-by-id input").val();
-                  if (valid_ids.includes(id)) {
-                      window.location.href = "../abdetail/?ab_idx=" + id;
-                  } else {
-                      var maxid = Math.max.apply(Math, valid_ids);
-                      alert("Invalid ID. ID is between 0 and " + maxid);
-                  }
-              });
-              $("#search-by-name-button").click(function() {
-                  $("#search-by-name-button").text("Searching...");
-                  var queryname = $("#search-by-name input").val();
-                  var method = $("#search-name-radio-method input:checked").val();
-                  if (method == "exact") {
-                      var found = false;
-                      for (var i = 0; i < parsed.length; i++) {
-                          var all_names = parsed[i]["all_names"].split(";");
-                          if (all_names.includes(queryname)) {
-                              found = true;
-                              window.location.href = "../abdetail/?ab_idx=" + parsed[i]["ab_idx"];
-                              break;
-                          };
-                      };
-                      if (!found) {
-                          alert("No results found. Try approximate search.");
-                      }
-                  } else {
-                      const namefuse = new Fuse(parsed, {
-                          keys: ["ab_idx", "all_names"],
-                      });
-                      var results = namefuse.search(queryname);
-                      const maxnum_results = 400;
-                      results = results.slice(0, maxnum_results);
-                      var searched_abidxs = [];
-                      for (var i = 0; i < results.length; i++) {
-                          searched_abidxs.push(results[i]["item"]["ab_idx"]);
-                      }
-                      window.location.href = "../searchresults/?ab_idxs=" + JSON.stringify(searched_abidxs);
-                  };
-              });
-              $.ajax({
-                  url: "../_data/tables/record.csv",
-                  type: "GET",
-                  async: false,
-                  dataType: "text",
-                  success: function(data) {
-                      var parsed_record = $.csv.toObjects(data);
-                      $("#search-by-sequence-button").click(function() {
-                          $("#search-by-sequence-button").text("Searching...");
-                          var queryseq = $("#search-by-sequence textarea").val();
-                          var method = $("#search-name-radio-method input:checked").val();
-                          var threshold = $("#search-by-sequence-identity input").val();
-                          var chain = $("#search-by-sequence-chain-select").val();
-                          if (chain == "Both") {
-                              var recordkeys = ["Hseq","Lseq"];
-                          } else if (chain == "Heavy chain") {
-                              var recordkeys = ["Hseq"];
-                          } else {
-                              var recordkeys = ["Lseq"];
-                          };
-                          const recordfuse = new Fuse(parsed_record, {
-                              keys: recordkeys,
-                              threshold: threshold
-                          });
-                          var results = recordfuse.search(queryseq);
-                          const maxnum_results = 400;
-                          results = results.slice(0, maxnum_results);
-                          var searched_abidxs = [];
-                          for (var i = 0; i < results.length; i++) {
-                              searched_abidxs.push(results[i]["item"]["ab_idx"]);
-                          };
-                          var rmdup_abidxs = Array.from(new Set(searched_abidxs));
-                          var joined_abidxs = rmdup_abidxs.join(",");
-                          window.location.href = "../searchresults/?ab_idxs=" + joined_abidxs;
-                      });
-                  }
-             })
-          }
+        url: "../_data/tables/name.csv",
+        type: "GET",
+        async: false,
+        dataType: "text",
+        success: function(data) {
+            var parsed = $.csv.toObjects(data);
+            var valid_ids = [];
+            for (var i = 0; i < parsed.length; i++) {
+                valid_ids.push(parsed[i]["ab_idx"]);
+            }
+            $("#search-by-id-button").click(function() {
+                var id = $("#search-by-id input").val();
+                if (valid_ids.includes(id)) {
+                    window.location.href = "../abdetail/?ab_idx=" + id;
+                } else {
+                    var maxid = Math.max.apply(Math, valid_ids);
+                    alert("Invalid ID. ID is between 0 and " + maxid);
+                }
+            });
+            $("#search-by-name-button").click(function() {
+                $("#search-by-name-button").text("Searching...");
+                var queryname = $("#search-by-name input").val();
+                var method = $("#search-name-radio-method input:checked").val();
+                if (method == "exact") {
+                    var found = false;
+                    for (var i = 0; i < parsed.length; i++) {
+                        var all_names = parsed[i]["all_names"].split(";");
+                        if (all_names.includes(queryname)) {
+                            found = true;
+                            window.location.href = "../abdetail/?ab_idx=" + parsed[i]["ab_idx"];
+                            break;
+                        };
+                    };
+                    if (!found) {
+                        alert("No results found. Try approximate search.");
+                    }
+                } else {
+                    const namefuse = new Fuse(parsed, {
+                        keys: ["ab_idx", "all_names"],
+                    });
+                    var results = namefuse.search(queryname);
+                    const maxnum_results = 400;
+                    results = results.slice(0, maxnum_results);
+                    var searched_abidxs = [];
+                    for (var i = 0; i < results.length; i++) {
+                        searched_abidxs.push(results[i]["item"]["ab_idx"]);
+                    }
+                    var found = searched_abidxs.length > 0;
+                    if (!found) {
+                        alert("No results found. Try another search.");
+                    } else {
+                        var joined_abidxs = searched_abidxs.join(",");
+                        window.location.href = "../searchresults/?ab_idxs=" + joined_abidxs;
+                    }
+                };
+                $("#search-by-name-button").text("Search");
+            });
+            $.ajax({
+                url: "../_data/tables/record.csv",
+                type: "GET",
+                async: false,
+                dataType: "text",
+                success: function(data) {
+                    var parsed_record = $.csv.toObjects(data);
+                    $("#search-by-sequence-button").click(function() {
+                        $("#search-by-sequence-button").text("Searching...");
+                        var queryseq = $("#search-by-sequence textarea").val();
+                        var method = $("#search-name-radio-method input:checked").val();
+                        var threshold = $("#search-by-sequence-identity input").val();
+                        var chain = $("#search-by-sequence-chain-select").val();
+                        if (chain == "Both") {
+                            var recordkeys = ["Hseq","Lseq"];
+                        } else if (chain == "Heavy chain") {
+                            var recordkeys = ["Hseq"];
+                        } else {
+                            var recordkeys = ["Lseq"];
+                        };
+                        const recordfuse = new Fuse(parsed_record, {
+                            keys: recordkeys,
+                            threshold: threshold
+                        });
+                        var results = recordfuse.search(queryseq);
+                        const maxnum_results = 400;
+                        results = results.slice(0, maxnum_results);
+                        var searched_abidxs = [];
+                        for (var i = 0; i < results.length; i++) {
+                            searched_abidxs.push(results[i]["item"]["ab_idx"]);
+                        };
+                        var rmdup_abidxs = Array.from(new Set(searched_abidxs));
+                        var found = rmdup_abidxs.length > 0;
+                        if (!found) {
+                            alert("No results found. Try another search.");
+                        } else {
+                            var joined_abidxs = rmdup_abidxs.join(",");
+                            window.location.href = "../searchresults/?ab_idxs=" + joined_abidxs;
+                        }
+                    });
+                }
+            })
+        }
     });
 
 });

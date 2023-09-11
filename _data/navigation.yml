@@ -23,15 +23,17 @@ side:
     children:
       - title: "Download all in one"
         url: /download/#download-all
-      - title: "Select one to download"
+      - title: "Select one table to download"
         url: /download/#download-one
+      - title: "Download sqlite db"
+        url: https://pengtb.github.io/antibodycov2db/assets/db/collected_0825.db
   - title: "Browse"
     url: /browse/
     children:
-      - title: "Browse datasets"
+      - title: "Datasets viewer"
         url: /browse/#header-browse-datasets
       - title: "Browse database by SQLite Viewer"
-        url: http://inloop.github.io/sqlite-viewer/?url=http://pengtb.github.io/antibodycov2db/assets/db/collected_0825.db
+        url: http://inloop.github.io/sqlite-viewer
   - title: "Search"
     url: /search/
     children:
@@ -43,6 +45,13 @@ side:
         url: /search/#search-by-sequence
   - title: "Analysis"
     url: /analysis/
+    children:
+      - title: "Distribution of collected data"
+        url: /analysis/#distribution
+      - title: "Correlations with binding affinites"
+        url: /analysis/#correlations
+      - title: "Split of datasets"
+        url: /analysis/#ds-split  
   - title: "Utilities"
     url: /utilities/
     children:

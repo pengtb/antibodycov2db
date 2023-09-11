@@ -264,7 +264,15 @@ function abtype_callback(toshow_id) {
             })
         }
     });
+};
+function click_changecolor(element) {
+    if (element.style.color === "grey") {
+        element.style.color = "black";
+    } else {
+        element.style.color = "grey";
+    }
 }
+$("#page-title").text("Loading tables...");
 $(document).ready(function(){
     // names
     var ab_idx = GetQueryString("ab_idx");
@@ -337,10 +345,13 @@ $(document).ready(function(){
             },
         });
     });
+    $("details summary h2").click(function(){
+        click_changecolor(this);
+    });
+    $("#page-title").text("Details");
 });
 
 </script>
-
 <h1><span><em>names</em> of this antibody: </span><span id="detail-all_names">Loading...</span></h1>
 <h1 id="header-binding-evidence">Binding evidence</h1>
 <details open><summary>
