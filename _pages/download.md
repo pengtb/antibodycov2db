@@ -140,7 +140,7 @@ Please choose a table firstly:
   <option value="vgene">vgene</option>
 </select>
 <a id="dbtable-dllink" href="../_data/tables/name.csv" download="name.csv" class="btn btn--primary">Download</a>
-
+<img src="../assets/images/dbmodel_20230912.png" width="100%">
 <h2 id="header-introduction">Introduction</h2>
 <p id="dbtable-intro"></p>
 
