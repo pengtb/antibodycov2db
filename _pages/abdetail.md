@@ -30,7 +30,7 @@ td {
     word-break: break-all;
 }
 div.structure {
-    width: 800;
+    width: 900px;
     height: 400px;
     position:relative;
 }
@@ -88,6 +88,8 @@ function LoadData(filepath, detailid, donecallback, subsetfunction, showcolname,
                 ShowData(subset, detailid, showcolname, onlyfirst=onlyfirst);
             } else {
                 $("#header-"+detailid).hide();
+                $("h2[group="+detailid+"]").hide();
+                $("ul[group="+detailid+"]").hide();
                 $("#"+detailid).hide();
             };
         },
@@ -202,13 +204,20 @@ function pdb_callback(selector, columnname="HC_instance_id") {
         $(td).html(formatted_pdb);
     });
 };
-function visualize_epitope(epitope_viewerInstance, epitopes_selections) {
-    epitope_viewerInstance.visual.reset({ camera: false, theme: true });
-//    epitope_viewerInstance.visual.focus([{start_residue_number: 319, end_residue_number: 541}]);
-    epitope_viewerInstance.visual.select({data:[{start_residue_number: 319, end_residue_number: 541, focus: true, sideChain: false}], nonSelectedColor:{r:255, g:255, b:255}});
-//    epitope_viewerInstance.visual.clearSelection();
-    epitope_viewerInstance.visual.select(epitopes_selections);
-    epitope_viewerInstance.visual.highlight(epitopes_selections);
+function visualize_epitope(epitope_viewerInstance, epitopes_selections, pdbid, rbdchainid, abchainids) {
+    var options = {
+    moleculeId: pdbid,
+    hideControls: true,
+    landscape: true,
+    pdbeLink: true,
+    sequencePanel: true,
+    bgColor: {r:255, g:255, b:255},
+    };
+    epitope_viewerInstance.visual.update(options, true);
+    epitope_viewerInstance.events.loadComplete.subscribe(function() {
+        epitope_viewerInstance.visual.select(epitopes_selections);
+        epitope_viewerInstance.visual.highlight(epitopes_selections);
+    })
 };
 function epitope_callback(toshow_id) {
     $.ajax({
@@ -218,9 +227,16 @@ function epitope_callback(toshow_id) {
         dataType: "text",
         success: function(data) {
             var parsed = $.csv.toObjects(data);
-            $("#"+toshow_id+" thead tr").append("<th>epitope</th>");
+            $("#"+toshow_id+" thead tr").append("<th>epitope (click to visualize)</th>");
             $.each($("#"+toshow_id+" tbody td[column='HC_instance_id']"), function(key, td) {
                 var hc_instance_id = $(td).text();
+                var lc_instance_id = $(td).parent().find("td[column='LC_instance_id']").text();
+                var spike_instance_id = $(td).parent().find("td[column='spike_instance_id']").text();
+                var hc_chainid = hc_instance_id.split(".")[1];
+                var lc_chainid = lc_instance_id.split(".")[1];
+                var ab_chainids = [hc_chainid, lc_chainid].join(",");
+                var pdbid = spike_instance_id.split(".")[0].toLowerCase();
+                var spike_chainid = spike_instance_id.split(".")[1];
                 var epitopes = "";
                 $.each(parsed, function(key, value) {
                     if (value["HC_instance_id"] === hc_instance_id) {
@@ -231,13 +247,14 @@ function epitope_callback(toshow_id) {
                 $.each(epitopes.split(";"), function(key, value) {
                     epitopes_selections.push({
                         color:{r:0, g:0, b:255},
-                        residue_number: parseInt(value.substring(0, value.length-1)),
-                        sideChain: false,
-                        focus: false,
+                        struct_asym_id: spike_chainid,
+                        auth_residue_number: parseInt(value.substring(0, value.length-1)),
+                        sideChain: true,
+                        focus: true,
                     });
                 });
                 var serialized_epitopes_selections = "{data:" + JSON.stringify(epitopes_selections) + "}";
-                $(td).parent().append("<td class='clickable' onclick='visualize_epitope(epitope_viewerInstance, " + serialized_epitopes_selections + ")'>"+epitopes+"</td>");
+                $(td).parent().append("<td class='clickable' onclick='visualize_epitope(epitope_viewerInstance, " + serialized_epitopes_selections + ", \"" + pdbid + "\", \"" + spike_chainid + "\", \"" + ab_chainids + "\" )'>"+epitopes+"</td>");
             })
         }
     });
@@ -305,6 +322,9 @@ $(document).ready(function(){
             lseqs.push($(td).text());
         });
         LoadData("../_data/tables/trunct2fv.csv", "detail-lvseq", function() { seq_callback("#detail-lvseq","font-family: monospace;",linelength=80);}, function(value) { return lseqs.includes(value["seq"]) }, "seq_vdomain", false, onlyfirst=true);
+        if ($("#detail-hvseq").text() === "Loading...") {
+            $("#header-fv-region").hide();
+        }
     });
     // epitope
     $("div[dbsource='evidence']").ready(function() {
@@ -341,7 +361,16 @@ $(document).ready(function(){
                         pdb_instances.push(value["instance"]);
                     })
                 };
-                LoadData("../_data/tables/"+pairing_filename, toshow_id, function() {pdb_callback("#"+toshow_id, "HC_instance_id"); pdb_callback("#"+toshow_id, "LC_instance_id"); pdb_callback("#"+toshow_id, "spike_instance_id"); epitope_callback(toshow_id);}, function(value) { return pdb_instances.includes(value["HC_instance_id"]) }, toshow_colnames, false);
+                if (pdb_instances.length === 0) {
+                    $("#detail-pdb_ab").hide();
+                    $("#detail-pdb_ab").text("Not found");
+                    $("#detail-pdb_nb").hide();
+                    $("#detail-pdb_nb").text("Not found");
+                    $("#header-epitope").hide();
+                    $("#visualize-epitope").hide();
+                } else {
+                    LoadData("../_data/tables/"+pairing_filename, toshow_id, function() {pdb_callback("#"+toshow_id, "HC_instance_id"); pdb_callback("#"+toshow_id, "LC_instance_id"); pdb_callback("#"+toshow_id, "spike_instance_id"); epitope_callback(toshow_id);}, function(value) { return pdb_instances.includes(value["HC_instance_id"]) }, toshow_colnames, false);
+                }
             },
         });
     });
@@ -374,16 +403,16 @@ $(document).ready(function(){
 </details>
 <details open><summary>
 <h2 id="header-fv-region">Predicted variable domain sequences & split of CDR/FR  <i class="fas fa-angle-right"></i></h2></summary>
-<ul>
+<ul group="detail-hvseq">
 <li id="header-detail-hvseq">Heavy Chain <i class="fas fa-copy clickable" onclick="copy_fvseq('detail-hvseq')"></i>
-<div class="notice" id="detail-hvseq" dbsource="trunct2fv">>Loading...</div></li>
+<div class="notice" id="detail-hvseq" dbsource="trunct2fv">Loading...</div></li>
 <li id="header-detail-lvseq">Light Chain <i class="fas fa-copy clickable" onclick="copy_fvseq('detail-lvseq')"></i>
 <div class="notice" id="detail-lvseq" dbsource="trunct2fv">Loading...</div></li>
 </ul>
 </details>
 <details open><summary>
-<h2 id="header-identified-vgene">Identified V gene  <i class="fas fa-angle-right"></i></h2></summary>
-<p class="notice"><span><em><strong>IGHV</strong></em> gene: </span><span id="detail-vhgene" dbsource="vgene">Loading...</span><br><span><em><strong>IGLV/IGKV</strong></em> gene: </span><span id="detail-vlgene" dbsource="vgene">Loading...</span></p>
+<h2 id="header-identified-vgene" group="detail-vhgene">Identified V gene  <i class="fas fa-angle-right"></i></h2></summary>
+<p id="header-detail-vhgene" class="notice"><span><em><strong>IGHV</strong></em> gene: </span><span id="detail-vhgene" dbsource="vgene">Loading...</span><br><span><em><strong>IGLV/IGKV</strong></em> gene: </span><span id="detail-vlgene" dbsource="vgene">Loading...</span></p>
 </details>
 <h1 id="header-structures">Structures</h1>
 <details open><summary>
@@ -402,7 +431,7 @@ $(document).ready(function(){
 $("#visualize-epitope").show();
 var epitope_viewerInstance = new PDBeMolstarPlugin();
 var options = {
-    customData: { url: 'https://www.ebi.ac.uk/pdbe/model-server/v1/7wz2/atoms?label_entity_id=1&auth_asym_id=A&encoding=bcif', format: 'cif', binary:true },
+    customData: { url: 'https://www.ebi.ac.uk/pdbe/model-server/v1/7wz2/atoms?encoding=bcif', format: 'cif', binary:true },
     hideControls: true,
     landscape: true,
     pdbeLink: true,
@@ -411,11 +440,6 @@ var options = {
 }
 var viewerContainer = document.getElementById('visualize-epitope');
 epitope_viewerInstance.render(viewerContainer, options);
-epitope_viewerInstance.events.loadComplete.subscribe(function() {
-//    epitope_viewerInstance.visual.focus([{start_residue_number: 319, end_residue_number: 541}]);
-    epitope_viewerInstance.visual.select({data:[{start_residue_number: 319, end_residue_number: 541, focus: true, sideChain: false}], nonSelectedColor:{r:255, g:255, b:255}});
-//    epitope_viewerInstance.visual.clearSelection();
-});
 // visualize igfold structures
 var ab_idx = GetQueryString("ab_idx");
 var structurefilepath = "../assets/igfold/"+ab_idx+".pdb";
@@ -424,6 +448,9 @@ $.ajax({
     type: "HEAD",
     error: function() {
         $("#loading-visualize-igfold").text("Structures not available.");
+        $("#loading-visualize-igfold").hide();
+        $("#visualize-igfold").hide();
+        $("#header-igfold").hide();
     },
     success: function() {
         $("#loading-visualize-igfold").text("");

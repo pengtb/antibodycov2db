@@ -389,7 +389,7 @@ $(document).ready(function() {
 <form id="vgene-options">
 <label for="vgene-select-subset">Subset to show: <select id="vgene-select-subset">
 <option selected>All antibodies</option>
-<option>Only those with K_D</option>
+<option>Only those with <emphasis>K<sub>D</sub></emphasis></option>
 </select></label>
 <label for="vgene-select-chain">Chain: <select id="vgene-select-chain">
 <option selected>Heavy chain</option>
