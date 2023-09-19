@@ -58,7 +58,7 @@ details[open] summary * i[class="fas fa-angle-right"] {
 <!-- <link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-3.1.0.css"> -->
 <link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-light-3.1.0.css">
 <script type="text/javascript" src="https://www.ebi.ac.uk/pdbe/pdb-component-library/js/pdbe-molstar-plugin-3.1.0.js"></script>
-<script type="text/javascript" src="https://raw.githubusercontent.com/douglascrockford/JSON-js/master/json2.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/json2/20160511/json2.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script>
 function GetQueryString(name) {
@@ -219,6 +219,20 @@ function visualize_epitope(epitope_viewerInstance, epitopes_selections, pdbid, r
         epitope_viewerInstance.visual.highlight(epitopes_selections);
     })
 };
+function build_epitope_selections(epitopes, spike_chainid) {
+    var epitopes_selections = [];
+    $.each(epitopes.split(";"), function(key, value) {
+        epitopes_selections.push({
+            color:{r:0, g:0, b:255},
+            struct_asym_id: spike_chainid,
+            auth_residue_number: parseInt(value.substring(0, value.length-1)),
+            sideChain: true,
+            focus: true,
+        });
+    });
+    var serialized_epitopes_selections = "{data:" + JSON.stringify(epitopes_selections) + "}";
+    return serialized_epitopes_selections
+}
 function epitope_callback(toshow_id) {
     $.ajax({
         url: "../_data/tables/epitope_group.csv",
@@ -228,6 +242,10 @@ function epitope_callback(toshow_id) {
         success: function(data) {
             var parsed = $.csv.toObjects(data);
             $("#"+toshow_id+" thead tr").append("<th>epitope (click to visualize)</th>");
+            $("#"+toshow_id+" thead tr").append("<th>predicted epitope (click to visualize)</th>");
+            $("#"+toshow_id+" thead tr").append("<th>epitope sites</th>");
+            $("#"+toshow_id+" thead tr").append("<th>epitope class</th>");
+            $("#"+toshow_id+" thead tr").append("<th>epitope group</th>");
             $.each($("#"+toshow_id+" tbody td[column='HC_instance_id']"), function(key, td) {
                 var hc_instance_id = $(td).text();
                 var lc_instance_id = $(td).parent().find("td[column='LC_instance_id']").text();
@@ -238,23 +256,30 @@ function epitope_callback(toshow_id) {
                 var pdbid = spike_instance_id.split(".")[0].toLowerCase();
                 var spike_chainid = spike_instance_id.split(".")[1];
                 var epitopes = "";
+                var predicted_epitopes = "";
+                var epitope_sites = "";
+                var epitope_class = "";
+                var epitope_group = "";
                 $.each(parsed, function(key, value) {
                     if (value["HC_instance_id"] === hc_instance_id) {
                         epitopes = value["epitope"];
+                        predicted_epitopes = value["predicted_epitopes"];
+                        epitope_sites = value["epitope_sites"];
+                        epitope_class = value["epitope_class"];
+                        epitope_group = value["checked_epitope_group"];
                     };
                 });
-                var epitopes_selections = [];
-                $.each(epitopes.split(";"), function(key, value) {
-                    epitopes_selections.push({
-                        color:{r:0, g:0, b:255},
-                        struct_asym_id: spike_chainid,
-                        auth_residue_number: parseInt(value.substring(0, value.length-1)),
-                        sideChain: true,
-                        focus: true,
-                    });
-                });
-                var serialized_epitopes_selections = "{data:" + JSON.stringify(epitopes_selections) + "}";
+                var serialized_epitopes_selections = build_epitope_selections(epitopes, spike_chainid);
                 $(td).parent().append("<td class='clickable' onclick='visualize_epitope(epitope_viewerInstance, " + serialized_epitopes_selections + ", \"" + pdbid + "\", \"" + spike_chainid + "\", \"" + ab_chainids + "\" )'>"+epitopes+"</td>");
+                if (predicted_epitopes !== "") {
+                    var serialized_predicted_epitopes_selections = build_epitope_selections(predicted_epitopes, spike_chainid);
+                    $(td).parent().append("<td class='clickable' onclick='visualize_epitope(epitope_viewerInstance, " + serialized_predicted_epitopes_selections + ", \"" + pdbid + "\", \"" + spike_chainid + "\", \"" + ab_chainids + "\" )'>"+predicted_epitopes+"</td>");
+                } else {
+                    $(td).parent().append("<td></td>");
+                };
+                $(td).parent().append("<td>"+epitope_sites+"</td>");
+                $(td).parent().append("<td>"+epitope_class+"</td>");
+                $(td).parent().append("<td>"+epitope_group+"</td>");
             })
         }
     });

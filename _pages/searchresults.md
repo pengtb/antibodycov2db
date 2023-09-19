@@ -45,7 +45,7 @@ tsv_reader:
 }
 </style>
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script type="text/javascript" src="https://raw.githubusercontent.com/douglascrockford/JSON-js/master/json2.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/json2/20160511/json2.min.js"></script>
 <script>
 function GetQueryString(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
