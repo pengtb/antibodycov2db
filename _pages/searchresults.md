@@ -44,7 +44,7 @@ tsv_reader:
   background-color: #eee; /* Add a hover effect to all links, except for headers */
 }
 </style>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script type="text/javascript" src="https://raw.githubusercontent.com/douglascrockford/JSON-js/master/json2.js"></script>
 <script>
 function GetQueryString(name) {

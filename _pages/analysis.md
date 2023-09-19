@@ -53,7 +53,7 @@ tsv_reader:
         transform: rotate(90deg);
     }
 </style>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script type="module">

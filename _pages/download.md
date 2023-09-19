@@ -31,8 +31,7 @@ td {
 </style>
 
 <!-- <script src="../assets/js/main.min.js"></script> -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <!-- change introduction according to selected -->
 <script>
 function UpdateTableIntro() {

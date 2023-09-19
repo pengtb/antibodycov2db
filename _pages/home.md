@@ -35,10 +35,10 @@ This database aims to provide more detailed information for antibodies binding t
 [interproscan]: <https://www.ebi.ac.uk/interpro/about/interproscan/>
 [igfold]: <https://github.com/Graylab/IgFold>
 [imgt]: <https://www.imgt.org/IMGTScientificChart/Numbering/IMGTcorrespondence.html>
-[download-all]: <antibodycov2db/download/#download-all>
-[download-one]: <antibodycov2db/download/#download-one>
-[download-sqlite]: <[antibodycov2db/assets/db/collected_0825.db]>
-[browse]: <antibodycov2db/browse/>
+[download-all]: <download/#download-all>
+[download-one]: <download/#download-one>
+[download-sqlite]: <[assets/db/collected_0919.db]>
+[browse]: <browse/>
 [sqlite-viewer]: <http://inloop.github.io/sqlite-viewer>
-[search]: <antibodycov2db/search/>
-[analysis]: <antibodycov2db/analysis/>
+[search]: <search/>
+[analysis]: <analysis/>

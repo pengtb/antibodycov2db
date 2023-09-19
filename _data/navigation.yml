@@ -26,7 +26,7 @@ side:
       - title: "Select one table to download"
         url: /download/#download-one
       - title: "Download sqlite db"
-        url: https://pengtb.github.io/antibodycov2db/assets/db/collected_0825.db
+        url: https://pengtb.github.io/antibodycov2db/assets/db/collected_0919.db
   - title: "Browse"
     url: /browse/
     children:
