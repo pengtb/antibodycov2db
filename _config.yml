@@ -23,12 +23,11 @@ email: v-tianbopeng@microsoft.com
 description: >- # this means to ignore newlines until "baseurl:"
   SARS-Cov2 RBD Antibody Database
 baseurl: "" # the subpath of your site, e.g. /blog
-# url: "antibodycov2db.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+url: "Cov2RBDAb.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
-github_username:  pengtb
+github_username:  Cov2RBDAb
 minimal_mistakes_skin: default
 search: false
-baseurl: "/antibodycov2db" # the subpath of your site, e.g. /blog
 
 # Build settings
 # theme: minima
