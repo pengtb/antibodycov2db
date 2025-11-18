@@ -2,7 +2,7 @@
 
 The repository contains the source code of the web interface of the CoV2RBDAb databse.
 
-The source code is open sourced under under a
+The code is open sourced under a
 [Creative Commons Attribution-NonCommercial 4.0 International License][cc-by-nc].
 
 Shield: [![CC BY-NC 4.0][cc-by-nc-shield]][cc-by-nc]
