@@ -5,7 +5,7 @@ header:
     # overlay_color: "#333"
     overlay_image: "/assets/images/header.png"
     overlay_filter: 0.5
-    caption: "Diagram Credit: [**EPIGENTEK**](https://www.epigentek.com/)"
+    # caption: "Diagram Credit: [**EPIGENTEK**](https://www.epigentek.com/)"
     # actions:
     #  - label: "Download All"
     #    url: "https://github.com"
@@ -119,7 +119,9 @@ $(document).ready(function(){
 # One click for all {#download-all}
 Just click <a href="../compressed/all_db_tables.7z" download="all_db_tables.7z">here</a> to download all the tables in the database and <a href="../compressed/all_ds_tables.7z" download="all_ds_tables.7z">here</a> for all the processed datasets.
 
-# Or select one table to preview and download {#download-one}
+Or click <a href="https://doi.org/10.5281/zenodo.17627592">here</a> to access the SQLite3-format database file uploaded to Zenodo.
+
+# Select one table to preview and download {#download-one}
 Please choose a table firstly: 
 <select name="table2dl" id="table-select">
   <option value="name" selected>name</option>

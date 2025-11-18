@@ -25,8 +25,8 @@ side:
         url: /download/#download-all
       - title: "Select one table to download"
         url: /download/#download-one
-      - title: "Download sqlite db"
-        url: https://konojojo.icu/collected_0919.db
+      - title: "Download SQLite3-format db"
+        url: https://doi.org/10.5281/zenodo.17627592
   - title: "Browse"
     url: /browse/
     children:
